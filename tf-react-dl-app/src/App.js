@@ -1,10 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import { useRef, useEffect } from "react";
+import Webcam from "react-webcam";
 import * as tf from "@tensorflow/tfjs";
 import * as poseDetection from '@tensorflow-models/pose-detection';
-import Webcam from "react-webcam";
-import { Camera } from "./Camera"
+import { drawResults } from "./utilities"
 
 function App() {
   const webcamRef = useRef(null);
@@ -15,6 +14,7 @@ function App() {
     const detector = await poseDetection.createDetector(model);
 
     let poses = null;
+    let image = null;
 
     setInterval(async () => {
       if (
@@ -22,20 +22,20 @@ function App() {
         webcamRef.current !== null &&
         webcamRef.current.video.readyState === 4
       ) {
-        // Get Video Properties
+        // Get video properties
         const video = webcamRef.current.video;
         const videoWidth = webcamRef.current.video.videoWidth;
         const videoHeight = webcamRef.current.video.videoHeight;
 
-        // Set video width
+        // Set video width and height
         webcamRef.current.video.width = videoWidth;
         webcamRef.current.video.height = videoHeight;
 
-        // Set canvas height and width
+        // Set canvas width and height
         canvasRef.current.width = videoWidth;
         canvasRef.current.height = videoHeight;
 
-        let image = video;
+        image = video;
 
         poses = await detector.estimatePoses(image);
 
@@ -44,12 +44,11 @@ function App() {
         // Draw mesh
         const ctx = canvasRef.current.getContext("2d");
 
-        Camera.drawResults(ctx,poses);
+        drawResults(ctx,poses);
       }
     }, 10);
   }
 
-  //https://www.w3schools.com/react/react_useeffect.asp
   useEffect(() => {
     //Runs only on the first render
     runMoveNet()
