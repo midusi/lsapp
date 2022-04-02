@@ -1,4 +1,4 @@
-import * as poseDetection from '@tensorflow-models/pose-detection';
+import * as posedetection from '@tensorflow-models/pose-detection';
 
 const DEFAULT_LINE_WIDTH = 2;
 const DEFAULT_RADIUS = 4;
@@ -14,9 +14,9 @@ const MOVENET_CONFIG = {
 };
 
 STATE.modelConfig = {...MOVENET_CONFIG};
-STATE.model = poseDetection.SupportedModels.MoveNet;
+STATE.model = posedetection.SupportedModels.MoveNet;
 
-let params = { STATE, DEFAULT_LINE_WIDTH, DEFAULT_RADIUS};
+const params = { STATE, DEFAULT_LINE_WIDTH, DEFAULT_RADIUS };
 
 // #ffffff - White
 // #800000 - Maroon
@@ -48,9 +48,9 @@ const COLOR_PALETTE = [
  * Draw the keypoints and skeleton on the video.
  * @param poses A list of poses to render.
  */
-export function drawResults(ctx,poses) {
+export function drawResults(ctx, poses) {
   for (const pose of poses) {
-    drawResult(ctx,pose);
+    drawResult(ctx, pose);
   }
 }
 
@@ -58,10 +58,10 @@ export function drawResults(ctx,poses) {
  * Draw the keypoints and skeleton on the video.
  * @param pose A pose with keypoints to render.
  */
-function drawResult(ctx,pose) {
+function drawResult(ctx, pose) {
   if (pose.keypoints != null) {
-    drawKeypoints(ctx,pose.keypoints);
-    drawSkeleton(ctx,pose.keypoints, pose.id);
+    drawKeypoints(ctx, pose.keypoints);
+    drawSkeleton(ctx, pose.keypoints, pose.id);
   }
 }
 
@@ -69,29 +69,29 @@ function drawResult(ctx,pose) {
  * Draw the keypoints on the video.
  * @param keypoints A list of keypoints.
  */
-function drawKeypoints(ctx,keypoints) {
+function drawKeypoints(ctx, keypoints) {
   const keypointInd =
-      poseDetection.util.getKeypointIndexBySide(params.STATE.model);
+      posedetection.util.getKeypointIndexBySide(params.STATE.model);
   ctx.fillStyle = 'Red';
   ctx.strokeStyle = 'White';
   ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
   for (const i of keypointInd.middle) {
-    drawKeypoint(ctx,keypoints[i]);
+    drawKeypoint(ctx, keypoints[i]);
   }
 
   ctx.fillStyle = 'Green';
   for (const i of keypointInd.left) {
-    drawKeypoint(ctx,keypoints[i]);
+    drawKeypoint(ctx, keypoints[i]);
   }
 
   ctx.fillStyle = 'Orange';
   for (const i of keypointInd.right) {
-    drawKeypoint(ctx,keypoints[i]);
+    drawKeypoint(ctx, keypoints[i]);
   }
 }
 
-function drawKeypoint(ctx,keypoint) {
+function drawKeypoint(ctx, keypoint) {
   // If score is null, just show the keypoint.
   const score = keypoint.score != null ? keypoint.score : 1;
   const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
@@ -108,7 +108,7 @@ function drawKeypoint(ctx,keypoint) {
  * Draw the skeleton of a body on the video.
  * @param keypoints A list of keypoints.
  */
-function drawSkeleton(ctx,keypoints, poseId) {
+function drawSkeleton(ctx, keypoints, poseId) {
   // Each poseId is mapped to a color in the color palette.
   const color = params.STATE.modelConfig.enableTracking && poseId != null ?
       COLOR_PALETTE[poseId % 20] :
@@ -117,7 +117,7 @@ function drawSkeleton(ctx,keypoints, poseId) {
   ctx.strokeStyle = color;
   ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
-  poseDetection.util.getAdjacentPairs(params.STATE.model).forEach(([
+  posedetection.util.getAdjacentPairs(params.STATE.model).forEach(([
                                                                     i, j
                                                                   ]) => {
     const kp1 = keypoints[i];

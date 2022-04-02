@@ -1,22 +1,29 @@
+// Import dependencies
 import './App.css';
 import { useRef, useEffect } from "react";
-import Webcam from "react-webcam";
 import * as tf from "@tensorflow/tfjs";
+// Import required model
 import * as poseDetection from '@tensorflow-models/pose-detection';
-import { drawResults } from "./utilities"
+import Webcam from "react-webcam";
+// Import drawing utility
+import { drawResults } from "./utilities";
 
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
+  // Main function
   const runMoveNet = async () => {
+    // Load network
     const model = poseDetection.SupportedModels.MoveNet;
     const detector = await poseDetection.createDetector(model);
 
     let poses = null;
     let image = null;
 
+    // Loop, detect poses and draw them on canvas
     setInterval(async () => {
+      // Check data is available
       if (
         typeof webcamRef.current !== "undefined" &&
         webcamRef.current !== null &&
@@ -35,16 +42,14 @@ function App() {
         canvasRef.current.width = videoWidth;
         canvasRef.current.height = videoHeight;
 
+        // Make detections
         image = video;
-
         poses = await detector.estimatePoses(image);
+        console.log(poses);
 
-        console.log(poses)
-
-        // Draw mesh
+        // Draw mesh and update drawing utility
         const ctx = canvasRef.current.getContext("2d");
-
-        drawResults(ctx,poses);
+        drawResults(ctx, poses);
       }
     }, 10);
   }
