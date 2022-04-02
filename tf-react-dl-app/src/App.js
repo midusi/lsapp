@@ -1,10 +1,10 @@
 // Import dependencies
 import './App.css';
 import { useRef, useEffect } from "react";
+import Webcam from "react-webcam";
 import * as tf from "@tensorflow/tfjs";
 // Import required model
 import * as poseDetection from '@tensorflow-models/pose-detection';
-import Webcam from "react-webcam";
 // Import drawing utility
 import { drawResults } from "./utilities";
 
