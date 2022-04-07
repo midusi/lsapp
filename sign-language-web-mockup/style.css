@@ -3,3 +3,16 @@ body {
   /*padding-top: 25px;*/
   background-color: #f7fff6;
 }
+
+.footer-link {
+  transition: .4s;
+  color: rgba(255,255,255,0.55);
+}
+.footer-link:hover {
+  transition: .4s;
+  color: rgba(255,255,255,0.75);
+}
+
+html {
+  scroll-padding-top: 70px; /* height of sticky header */
+}
