@@ -1,80 +1,81 @@
- //--------------------
-  // GET USER MEDIA CODE
-  //--------------------
-  navigator.getUserMedia = ( navigator.getUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.msGetUserMedia);
+//--------------------
+// GET USER MEDIA CODE
+//--------------------
+navigator.getUserMedia = ( navigator.getUserMedia 
+  || navigator.webkitGetUserMedia 
+  || navigator.mozGetUserMedia 
+  || navigator.msGetUserMedia );
 
 var video;
 var webcamStream;
 
-function startWebcam() {
-if (navigator.getUserMedia) {
-navigator.getUserMedia (
-
-// constraints
-{
-video: true,
-audio: false
-},
-
-// successCallback
-function(localMediaStream) {
-video = document.querySelector('video');
-video.srcObject=localMediaStream;
-webcamStream = localMediaStream;
-
-// const canvas = document.querySelector('canvas');
-// canvas.width = video.videoWidth;
-// canvas.height = video.videoHeight;
-
-},
-
-// errorCallback
-function(err) {
-console.log("The following error occured: " + err);
+async function getwh() {
+  let stream = await navigator.mediaDevices.getUserMedia({video: true});
+  let {width, height} = stream.getTracks()[0].getSettings();
+  //console.log(`${width}x${height}`); // 640x480
+  return {width, height};
 }
-);
-} else {
-console.log("getUserMedia not supported");
-}  
+
+function startWebcam() {
+  if (navigator.getUserMedia) {
+    navigator.getUserMedia(
+      // constraints
+      {
+      video: true,
+      audio: false
+      },
+      // successCallback
+      async function(localMediaStream) {
+      video = document.querySelector('video');
+      video.srcObject=localMediaStream;
+      webcamStream = localMediaStream;
+
+      const {width, height} = await getwh();
+      canvas.width = width;
+      canvas.height = height;
+      //console.log(canvas.width, canvas.height)
+      },
+      // errorCallback
+      function(err) {
+        console.log("The following error occured: " + err);
+      });
+  } else {
+    console.log("getUserMedia not supported");
+  }  
 }
 
 function stopWebcam() {
-webcamStream.stop();
+  webcamStream.stop();
 }
+
 //---------------------
 // TAKE A SNAPSHOT CODE
 //---------------------
 var canvas, ctx;
 
 function init() {
-// Get the canvas and obtain a context for
-// drawing in it
-canvas = document.getElementById("myCanvas");
-ctx = canvas.getContext('2d');
+  // Get the canvas and obtain a context for
+  // drawing in it
+  canvas = document.getElementById("myCanvas");
+  ctx = canvas.getContext('2d');
 }
 
 function snapshot() {
-// Draws current image from the video element into the canvas
-ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+  // Draws current image from the video element into the canvas
+  ctx.drawImage(video, 0,0, canvas.width, canvas.height);
 }
-
-// var intervalID = window.setInterval(miFuncion, 500, 'Parametro 1', 'Parametro 2');
 
 async function run(){
   const model = poseDetection.SupportedModels.MoveNet;
   const detector = await poseDetection.createDetector(model);
 
   var intervalID = window.setInterval(async () => {
-
-    ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+    snapshot();
 
     // Make detections
     image = video;
     poses = await detector.estimatePoses(image);
-    console.log(poses);
+    //console.log(poses);
 
     // Draw mesh and update drawing utility
     drawResults(ctx, poses);
@@ -82,35 +83,6 @@ async function run(){
 }
 
 run();
-
-function miFuncion(a,b) {
-  // Aquí va tu código
-  // Los parámetros son opcionales completamente
-  console.log(a);
-  console.log(b);
-}
-
-async function getwh() {
-let stream = await navigator.mediaDevices.getUserMedia({video: true});
-let {width, height} = stream.getTracks()[0].getSettings();
-console.log(`${width}x${height}`); // 640x480
-}
-
-getwh();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /////////////
 
