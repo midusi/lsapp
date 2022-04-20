@@ -45,7 +45,9 @@ function startWebcam() {
 }
 
 function stopWebcam() {
-  webcamStream.stop();
+  webcamStream.getTracks().forEach(function(track) {
+    track.stop();
+  });
 }
 
 //---------------------
@@ -66,25 +68,44 @@ function snapshot() {
 }
 
 async function run(){
-  const model = poseDetection.SupportedModels.MoveNet;
-  const detector = await poseDetection.createDetector(model);
+  // Load networks
+  const detectorConfigPoses = {
+    modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
+    enableTracking: true,
+    trackerType: poseDetection.TrackerType.BoundingBox
+  };
+  const detectorPoses = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfigPoses);
 
+  const model = handPoseDetection.SupportedModels.MediaPipeHands;
+  const detectorConfigHands = {
+    runtime: 'tfjs',
+  };
+  const detectorHands = await handPoseDetection.createDetector(model, detectorConfigHands);
+
+  // Loop, detect poses and draw them on canvas
   var intervalID = window.setInterval(async () => {
-    snapshot();
+    const image = video;
 
     // Make detections
-    image = video;
-    poses = await detector.estimatePoses(image);
+    const poses = await detectorPoses.estimatePoses(image);
     //console.log(poses);
 
+    const estimationConfig = {flipHorizontal: false};
+    const hands = await detectorHands.estimateHands(image, estimationConfig);
+    //console.log(hands);
+
     // Draw mesh and update drawing utility
+    snapshot();
     drawResults(ctx, poses);
+    drawResultsHands(hands);
   }, 10);
 }
 
 run();
 
-/////////////
+//---------------------------------------------------------
+//----------------------DRAW POSES-------------------------
+//---------------------------------------------------------
 
 const DEFAULT_LINE_WIDTH = 2;
 const DEFAULT_RADIUS = 4;
@@ -96,7 +117,7 @@ const STATE = {
 
 const MOVENET_CONFIG = {
   scoreThreshold: 0.3,
-  enableTracking: false
+  enableTracking: false //true
 };
 
 STATE.modelConfig = {...MOVENET_CONFIG};
@@ -221,4 +242,102 @@ function drawSkeleton(ctx, keypoints, poseId) {
       ctx.stroke();
     }
   });
+}
+
+//---------------------------------------------------------
+//----------------------DRAW HANDS-------------------------
+//---------------------------------------------------------
+
+const fingerLookupIndices = {
+  thumb: [0, 1, 2, 3, 4],
+  indexFinger: [0, 5, 6, 7, 8],
+  middleFinger: [0, 9, 10, 11, 12],
+  ringFinger: [0, 13, 14, 15, 16],
+  pinky: [0, 17, 18, 19, 20],
+}; // for rendering each finger as a polyline
+
+const connections = [
+  [0, 1], [1, 2], [2, 3], [3,4],
+  [0, 5], [5, 6], [6, 7], [7, 8],
+  [0, 9], [9, 10], [10, 11], [11, 12],
+  [0, 13], [13,14], [14, 15], [15, 16],
+  [0, 17], [17, 18],[18, 19], [19,20]
+];
+
+/**
+ * Draw the keypoints on the video.
+ * @param hands A list of hands to render.
+ */
+function drawResultsHands(hands) {
+  // Sort by right to left hands.
+  hands.sort((hand1, hand2) => {
+    if (hand1.handedness < hand2.handedness) return 1;
+    if (hand1.handedness > hand2.handedness) return -1;
+    return 0;
+  });
+
+  // Pad hands to clear empty scatter GL plots.
+  while (hands.length < 2) hands.push({});
+
+  for (let i = 0; i < hands.length; ++i) {
+    // Third hand and onwards scatterGL context is set to null since we
+    // don't render them.
+    this.drawResultHands(hands[i]);
+  }
+}
+
+/**
+ * Draw the keypoints on the video.
+ * @param hand A hand with keypoints to render.
+ * @param ctxt Scatter GL context to render 3D keypoints to.
+ */
+function drawResultHands(hand) {
+  if (hand.keypoints != null) {
+    this.drawKeypointsHands(hand.keypoints, hand.handedness);
+  }
+}
+
+/**
+ * Draw the keypoints on the video.
+ * @param keypoints A list of keypoints.
+ * @param handedness Label of hand (either Left or Right).
+ */
+function drawKeypointsHands(keypoints, handedness) {
+  const keypointsArray = keypoints;
+  this.ctx.fillStyle = handedness === 'Left' ? 'Red' : 'Blue';
+  this.ctx.strokeStyle = 'White';
+  this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
+
+  for (let i = 0; i < keypointsArray.length; i++) {
+    const y = keypointsArray[i].x;
+    const x = keypointsArray[i].y;
+    this.drawPointHands(x - 2, y - 2, 3);
+  }
+
+  const fingers = Object.keys(fingerLookupIndices);
+  for (let i = 0; i < fingers.length; i++) {
+    const finger = fingers[i];
+    const points = fingerLookupIndices[finger].map(idx => keypoints[idx]);
+    this.drawPathHands(points, false);
+  }
+}
+
+function drawPathHands(points, closePath) {
+  const region = new Path2D();
+  region.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) {
+    const point = points[i];
+    region.lineTo(point.x, point.y);
+  }
+
+  if (closePath) {
+    region.closePath();
+  }
+  this.ctx.stroke(region);
+}
+
+function drawPointHands(y, x, r) {
+  this.ctx.beginPath();
+  this.ctx.arc(x, y, r, 0, 2 * Math.PI);
+  this.ctx.fill();
 }

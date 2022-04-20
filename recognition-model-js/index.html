@@ -7,16 +7,24 @@
   <title>Document</title>
 </head>
 <body onload="init();">
-  <canvas  id="myCanvas" width="640" height="480"></canvas>  
   <button onclick="startWebcam();">Start WebCam</button>
   <button onclick="stopWebcam();">Stop WebCam</button> 
-     <button onclick="snapshot();">Take Snapshot</button> 
-  </p>
-  <video onclick="snapshot(this);" width=400 height=400 id="video" controls autoplay hidden></video>
+  <button onclick="snapshot();">Take Snapshot</button> 
 
-  
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@0.0.6/dist/pose-detection.min.js"></script>
+  <br>
+
+  <canvas  id="myCanvas" width="640" height="480" style="transform: scaleX(-1);">
+  <video onclick="snapshot(this);" width="640" height="480" controls autoplay hidden></video>
+
+  <!-- Require the peer dependencies of pose-detection and hand-pose-detection. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+
+  <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
   
   <script src="main.js"></script>
 </body>
