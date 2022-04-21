@@ -7,13 +7,12 @@ const canvas = new Canvas();
 
 // Load Networks
 app.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
-  modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
-  enableTracking: true,
-  trackerType: poseDetection.TrackerType.BoundingBox
+  modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
 });
 
 app.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
   runtime: 'tfjs',
+  modelType: 'lite'
 })
 
 // Event Listeners
