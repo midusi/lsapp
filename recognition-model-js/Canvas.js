@@ -11,10 +11,6 @@ export class Canvas {
     this.canvas.height = height;
   }
 
-  drawCameraFrame(camera) {
-    this.ctx.drawImage(camera.getVideo(), 0,0, this.canvas.width, this.canvas.height);
-  }
-
   getCtx() {
     this.ctx;
   }
@@ -25,5 +21,9 @@ export class Canvas {
 
   drawResultsHands(hands) {
     drawResultsHands(this.ctx, hands);
+  }
+
+  drawCameraFrame(camera) {
+    this.ctx.drawImage(camera.getVideo(), 0,0, this.canvas.width, this.canvas.height);
   }
 }

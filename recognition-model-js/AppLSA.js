@@ -1,22 +1,41 @@
+import { Camera } from './Camera.js';
+import { Canvas } from './Canvas.js';
+import * as rec from './Recognition.js';
 import { updateFPS } from "./fpsModule.js"; 
 
-var detectorPoses, detectorHands;
+const camera = new Camera();
+const canvas = new Canvas();
 
-export async function loadPoseNet(model, detectorConfig) {
-  detectorPoses = await poseDetection.createDetector(model, detectorConfig);
-}
+// Load Networks
+rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
+  modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+});
 
-export async function loadHandNet(model, detectorConfig) {
-  detectorHands = await handPoseDetection.createDetector(model, detectorConfig);
-}
+rec.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
+  runtime: 'tfjs',
+  modelType: 'lite'
+})
 
-export async function runInference(canvas, camera) {
+// Event Listeners
+camera.getVideo().addEventListener('loadeddata', function() {
+    runInference(canvas, camera);
+}, false);
+
+const buttonStart = document.getElementById('b-start-webcam');
+buttonStart.addEventListener('click', function() { 
+  camera.start(canvas);
+}, false);
+
+const buttonStop = document.getElementById('b-stop-webcam');
+buttonStop.addEventListener('click', function() { 
+  camera.stop();
+}, false);
+
+async function runInference(canvas, camera) {
   const image = camera.getVideo();
 
-  const poses = await detectorPoses.estimatePoses(image);
-
-  const estimationConfig = {flipHorizontal: false};
-  const hands = await detectorHands.estimateHands(image, estimationConfig);
+  const poses = await rec.estimatePoses(image);
+  const hands = await rec.estimateHands(image, {flipHorizontal: false});
 
   canvas.drawCameraFrame(camera);
   canvas.drawResultsPoses(poses);
@@ -24,5 +43,5 @@ export async function runInference(canvas, camera) {
 
   updateFPS();
 
-  requestAnimationFrame(() => this.runInference(canvas, camera));
+  requestAnimationFrame(() => runInference(canvas, camera));
 }

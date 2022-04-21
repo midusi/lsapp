@@ -4,6 +4,10 @@ export class Camera {
     this.video = document.querySelector('video');
   }
 
+  getVideo() {
+    return this.video;
+  }
+
   start(canvas) {
     var self = this;
     if (navigator.getUserMedia) {
@@ -37,9 +41,5 @@ export class Camera {
     this.webcamStream.getTracks().forEach(function(track) {
       track.stop();
     });
-  }
-
-  getVideo() {
-    return this.video;
   }
 }
