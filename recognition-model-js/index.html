@@ -9,12 +9,11 @@
 <body onload="init();">
   <button onclick="startWebcam();">Start WebCam</button>
   <button onclick="stopWebcam();">Stop WebCam</button> 
-  <button onclick="snapshot();">Take Snapshot</button> 
 
   <br>
 
-  <canvas  id="myCanvas" width="640" height="480" style="transform: scaleX(-1);">
-  <video onclick="snapshot(this);" width="640" height="480" controls autoplay hidden></video>
+  <video width="640" height="480" autoplay hidden></video>
+  <canvas width="640" height="480" style="transform: scaleX(-1);"></canvas>
 
   <!-- Require the peer dependencies of pose-detection and hand-pose-detection. -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
