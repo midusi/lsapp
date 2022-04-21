@@ -4,10 +4,12 @@
 
 class Camera {
   constructor() {
+    navigator.getUserMedia = 
+    ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
     this.video = document.querySelector('video');
   }
 
-  startWebcam(canvas) {
+  start(canvas) {
     var self = this;
     if (navigator.getUserMedia) {
       navigator.getUserMedia(
@@ -21,7 +23,8 @@ class Camera {
           self.video.srcObject = localMediaStream;
           self.webcamStream = localMediaStream;
 
-          const {width, height} = camera.getWidthHeight();
+          const {width, height} = self.getWidthHeight();
+          self.setWidthHeight(width, height);
           canvas.setWidthHeight(width, height); //callback
         },
         // errorCallback
@@ -33,7 +36,7 @@ class Camera {
     }
   }
 
-  stopWebcam() {
+  stop() {
     this.webcamStream.getTracks().forEach(function(track) {
       track.stop();
     });
@@ -73,63 +76,71 @@ class Canvas {
     this.canvas.height = height;
   }
 
-  drawFrame(camera) {
+  drawCameraFrame(camera) {
     // Draws current image from the video element into the canvas
     this.ctx.drawImage(camera.getFrame(), 0,0, this.canvas.width, this.canvas.height);
   }
 }
 
-async function init() {
-  // Load networks
-  const detectorConfigPoses = {
-    modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
-    enableTracking: true,
-    trackerType: poseDetection.TrackerType.BoundingBox
-  };
-  detectorPoses = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfigPoses);
-
-  const model = handPoseDetection.SupportedModels.MediaPipeHands;
-  const detectorConfigHands = {
-    runtime: 'tfjs',
-  };
-  detectorHands = await handPoseDetection.createDetector(model, detectorConfigHands);
-}
-
 class AppLSA {
-  static async run(camera, canvas) {
+  static async loadNet() {
+    // Load networks
+    const detectorConfigPoses = {
+      modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
+      enableTracking: true,
+      trackerType: poseDetection.TrackerType.BoundingBox
+    };
+    this.detectorPoses = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfigPoses);
+
+    const model = handPoseDetection.SupportedModels.MediaPipeHands;
+    const detectorConfigHands = {
+      runtime: 'tfjs',
+    };
+    this.detectorHands = await handPoseDetection.createDetector(model, detectorConfigHands);
+  }
+
+  static async runInference(camera, canvas) {
     // Loop, detect poses and draw them on canvas
     window.setInterval(async () => {
       const image = camera.getFrame();
 
       // Make detections
-      const poses = await detectorPoses.estimatePoses(image);
+      const poses = await this.detectorPoses.estimatePoses(image);
       //console.log(poses);
 
       const estimationConfig = {flipHorizontal: false};
-      const hands = await detectorHands.estimateHands(image, estimationConfig);
+      const hands = await this.detectorHands.estimateHands(image, estimationConfig);
       //console.log(hands);
 
       // Draw mesh and update drawing utility
-      canvas.drawFrame(camera);
+      canvas.drawCameraFrame(camera);
       drawResults(canvas.getContext(), poses);
       drawResultsHands(canvas.getContext(), hands);
     }, 10);
   }
 }
 
-const camera = new Camera();
-const canvas = new Canvas();
-
-init();
-AppLSA.run(camera, canvas);
-
-function startWebcam(){
-  camera.startWebcam(canvas);
+function init(){
+  const camera = new Camera();
+  const canvas = new Canvas();
+  
+  AppLSA.loadNet();
+  camera.getFrame().addEventListener('loadeddata', function() {
+    // Video is loaded and can be played
+    AppLSA.runInference(camera, canvas);
+  }, false);
+  
+  const buttonStart = document.getElementById('b-start-webcam');
+  buttonStart.addEventListener('click', function() { 
+    camera.start(canvas);
+  }, false);
+  
+  const buttonStop = document.getElementById('b-stop-webcam');
+  buttonStop.addEventListener('click', function() { 
+    camera.stop();
+  }, false);
 }
 
-function stopWebcam(){
-  camera.stopWebcam();
-}
 
 //---------------------------------------------------------
 //----------------------DRAW POSES-------------------------
