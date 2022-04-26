@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="b-start-webcam">Start</button>
+  <button id="b-stop-webcam">Stop</button>
+  <div>fps: <span id="fps"></span></div>
+
+  <br>
+
+  <video width="640" height="480" autoplay hidden></video>
+  <canvas width="640" height="480" style="transform: scaleX(-1);"></canvas>
+
+  <!-- Require the peer dependencies of pose-detection and hand-pose-detection. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+
+  <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
+  
+  <script type="module" src="AppLSA.js"></script>
+</body>
+</html>
