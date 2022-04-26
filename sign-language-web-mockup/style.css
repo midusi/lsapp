@@ -1,0 +1,21 @@
+body {
+  /*color: #f7fff6;*/
+  /*padding-top: 25px;*/
+  background-color: #f7fff6;
+}
+
+.footer-link {
+  transition: .4s;
+  color: rgba(255,255,255,0.55);
+}
+.footer-link:hover {
+  transition: .4s;
+  color: rgba(255,255,255,0.75);
+}
+
+html {
+  scroll-padding-top: 70px; /* height of sticky header */
+}
+
+#canvas-wrap { position:relative } /* Make this a positioned parent */
+#overlay     { position:absolute; top: calc(50% - 20px); left: calc(50% - 20px); }
