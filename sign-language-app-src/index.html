@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css" />
+  <title>LSApp👋</title>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 sticky-top">
+    <div class="container">
+      <a href="#" class="navbar-brand">LSApp👋</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navmenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="#translate" class="nav-link">Traduce (BETA)</a>
+          </li>
+          <li class="nav-item">
+            <a href="#learn" class="nav-link">Aprende</a>
+          </li>
+          <li class="nav-item">
+            <a href="#how-it-works" class="nav-link">Cómo funciona</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Showcase With Flex Classes -->
+  <section class="bg-dark text-light pt-0 p-lg-0 pt-lg-0 pb-1 text-center text-sm-start">
+    <div class="container">
+      <div class="d-sm-flex align-items-center justify-content-between">
+        <div>
+          <h1>Reconocimiento de Lengua de Señas <span class="text-primary">
+            Argentina</span></h1>
+            <p class="lead my-4">
+              Un sistema de reconocimiento de Lengua de Señas (RLS) que facilita la integración de la comunidad sorda mediante la traducción automática, pero también mediante el desarrollo de sistemas automatizados de enseñanza de LS, dada la falta de intérpretes y docentes de LS.
+            </p>
+        </div>
+
+        <div id="carouselExampleCaptions" class="carousel slide carousel-fade w-100 d-none d-lg-block" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="img/c3.png" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="img/c2.png" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="img/c1.png" class="d-block w-100" alt="...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boxes With Bootstrap Grid & Cards + (Bootstrap Icons) -->
+  <section class="p-4">
+    <div class="container">
+      <div class="row text-center g-4">
+        <div class="col-md">
+          <div class="card bg-dark text-light">
+            <div class="card-body text-center">
+              <div class="h1">
+                <i class="bi bi-person-bounding-box"></i>
+              </div>
+              <h3 class="card-title mb-3">
+                Traducir (BETA)
+              </h3>
+              <p class="card-text">
+                Utiliza la cámara de tu dispositivo y enfócala a la persona que realice las señas en LSA.
+              </p>
+              <a href="translate.html" class="btn btn-primary">¡Llévame a traducir!</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="card bg-dark text-light">
+            <div class="card-body text-center">
+              <div class="h1">
+                <i class="bi bi-camera"></i>
+              </div>
+              <h3 class="card-title mb-3">
+                Aprender
+              </h3>
+              <p class="card-text">
+                Grábate con tu cámara imitando los gestos que representan las palabras y frases que ves en pantalla.
+              </p>
+              <a href="learn.html" class="btn btn-primary">¡Comienza a aprender!</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Translate Section -->
+  <section id="translate" class="p-4">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-md">
+          <h2>¡Traduce en Tiempo Real! (BETA)</h2>
+          <p class="lead">
+            Utiliza el sistema de reconocimiento automático de lengua de señas argentina enfocándola a la persona que realizará las señas y obteniendo subtítulos en tiempo real.
+          </p>
+          <p>
+            La subtitulación en tiempo real permite que las personas sordas utilicen su lengua natural y sea traducida a la lengua escrita para comunicarse con otras personas, de modo que puedan comunicarse de igual forma con personas que sepan lengua de señas y aquellas que no, dado que estas últimas representan la gran mayoría de la población argentina y del mundo.
+          </p>
+          <a href="translate.html" class="btn btn-light.mt-3">
+            <i class="bi bi-chevron-right"></i>Comienza a traducir
+          </a>
+        </div>
+        <div class="col-md p-5">
+          <img src="img/realtime.gif" class="img-fluid" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learn Section -->
+  <section id="learn" class="p-4">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-md p-5 order-2 order-md-1 text-center">
+          <img src="img/gesto.gif" class="img-fluid w-75" alt="">
+        </div>
+        <div class="col-md order-1 order-md-2">
+          <h2>Aprende LSA🤟</h2>
+          <p class="lead">
+            Utiliza tu cámara para grabar y subir un video al sistema de reconocimiento automático de lengua de señas argentina y obtén una devolución de qué tan bien la has hecho.
+          </p>
+          <p>
+            Aprende y mejora tu comunicación en lengua de señas practicando con los videos que se encuentran en nuestras bases de datos. Aumenta la cantidad y disponibilidad de intérpretes y docentes de lengua de señas estudiando con el sistema, el cual te brinda de una retroalimentación para que perfecciones tu aprendizaje de la lengua de señas argentina.
+          </p>
+          <a href="learn.html" class="btn btn-light.mt-3">
+            <i class="bi bi-chevron-right"></i>Empieza a aprender
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works Section -->
+  <section id="how-it-works" class="p-4">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-md">
+          <h2>¿Magia? No, ¡Computadoras!</h2>
+          <p class="lead">
+            El Reconocimiento Automático de Señas, un subárea del Reconocimiento de Gestos, es un problema multidisciplinar sumamente complejo que hoy en día sigue sin ser resuelto en forma total.
+          </p>
+          <p>
+            Este motiva esfuerzos de diversas áreas de investigación como interacción hombre-máquina, visión por computadora, análisis de movimientos, aprendizaje automático y reconocimiento de patrones. En los últimos años el procesamiento de video ha experimentado grandes progresos mediante el uso de Deep Learning, modelos que permiten entrenar redes con millones de parámetros.
+          </p>
+          <a href="how-it-works.html" class="btn btn-light.mt-3">
+            <i class="bi bi-chevron-right"></i>Conoce más
+          </a>
+        </div>
+        <div class="col-md p-5">
+          <img src="img/openpose.gif" class="img-fluid" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="p-5 bg-dark text-white position-relative">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-7 text-center text-xl-start">
+          <span class="lead">Copyright &copy; 2022 Instituto de Investigacion en Informática - LIDI</span>
+          <img class="img-fluid d-none d-xl-inline" style="height: 25px" src="img/iii-lidi-logo.png" alt="">
+        </div>
+        <div class="col-md text-center text-xl-end">
+          <a href="tos.html" class="footer-link nav-link" style="display:inline-block;">Términos de Servicio</a>
+          <a href="policy.html" class="footer-link nav-link" style="display:inline-block;">Política de Privacidad</a>
+          <a href="faq.html" class="footer-link nav-link" style="display:inline-block;">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
