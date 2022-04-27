@@ -37,7 +37,7 @@ export class Camera {
     }  
   }
 
-  stop() {
+  stops() {
     this.webcamStream.getTracks().forEach(function(track) {
       track.stop();
     });

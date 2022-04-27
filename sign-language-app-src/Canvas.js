@@ -11,10 +11,6 @@ export class Canvas {
     this.canvas.height = height;
   }
 
-  getCtx() {
-    this.ctx;
-  }
-
   drawResultsPoses(poses) {
     drawResultsPoses(this.ctx, poses);
   }
