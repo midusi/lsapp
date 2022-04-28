@@ -16,7 +16,12 @@ rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
 rec.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
   runtime: 'tfjs',
   modelType: 'lite'
-})
+});
+
+rec.loadFaceNet(faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
+  runtime: 'tfjs',
+  refineLandmarks: false
+});
 
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
@@ -57,14 +62,20 @@ buttonStops.addEventListener('click', function() {
 async function runInference(canvas, camera) {
   const image = camera.getVideo();
 
-  const poses = await rec.estimatePoses(image);
+  const poses = await rec.estimatePoses(image, {flipHorizontal: false});
   const hands = await rec.estimateHands(image, {flipHorizontal: false});
+  const faces = await rec.estimateFaces(image, {flipHorizontal: false});
 
-  keypoints.push({posesKeypoints: poses, handsKeypoints: hands});
+  keypoints.push({
+    posesKeypoints: poses, 
+    handsKeypoints: hands,
+    facesKeypoints: faces,
+  });
 
   canvas.drawCameraFrame(camera);
   canvas.drawResultsPoses(poses);
   canvas.drawResultsHands(hands);
+  canvas.drawResultsFaces(faces);
 
   updateFPS();
 

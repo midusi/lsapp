@@ -1,4 +1,4 @@
-import { drawResultsPoses, drawResultsHands } from "./utilities.js";
+import { drawResultsPoses, drawResultsHands, drawResultsFaces } from "./utilities.js";
 
 export class Canvas {
   constructor() {
@@ -17,6 +17,10 @@ export class Canvas {
 
   drawResultsHands(hands) {
     drawResultsHands(this.ctx, hands);
+  }
+
+  drawResultsFaces(faces) {
+    drawResultsFaces(this.ctx, faces, true, true);
   }
 
   drawCameraFrame(camera) {
