@@ -6,6 +6,8 @@ import { updateFPS } from "./fpsModule.js";
 const camera = new Camera();
 const canvas = new Canvas();
 
+let keypoints = [];
+
 // Load Networks
 rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
   modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
@@ -19,6 +21,24 @@ rec.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
     runInference(canvas, camera);
+    setTimeout(
+      setInterval(function() {
+        fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-type' : 'application/json'
+          },
+          body: JSON.stringify({
+            keypoints: keypoints,
+            timestamp: new Date().toLocaleString()
+          })
+        })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+        keypoints = [];
+      }, 5000)
+    , 5000);
 }, false);
 
 const buttonStart = document.getElementById('btn-start-webcam');
@@ -39,6 +59,8 @@ async function runInference(canvas, camera) {
 
   const poses = await rec.estimatePoses(image);
   const hands = await rec.estimateHands(image, {flipHorizontal: false});
+
+  keypoints.push({posesKeypoints: poses, handsKeypoints: hands});
 
   canvas.drawCameraFrame(camera);
   canvas.drawResultsPoses(poses);
