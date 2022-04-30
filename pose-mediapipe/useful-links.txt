@@ -1,0 +1,8 @@
+https://blog.tensorflow.org/2021/05/high-fidelity-pose-tracking-with-mediapipe-blazepose-and-tfjs.html
+https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe
+
+yarn add @mediapipe/pose
+yarn add @tensorflow/tfjs-core
+yarn add @tensorflow/tfjs-backend-webgl
+yard add @tensorflow/tfjs-converter
+yarn add @tensorflow-models/pose-detection
