@@ -1,12 +1,17 @@
 // Import dependencies
 import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
 // 1. TODO - Import required model here
 // e.g. import * as tfmodel from "@tensorflow-models/tfmodel";
+import * as poseDetection from '@tensorflow-models/pose-detection';
+import '@tensorflow/tfjs-core';
+// Register WebGL backend.
+import '@tensorflow/tfjs-backend-webgl';
+import '@mediapipe/pose';
 import Webcam from "react-webcam";
 import "./App.css";
 // 2. TODO - Import drawing utility here
 // e.g. import { drawRect } from "./utilities";
+import { drawResultsPoses } from "./utilities";
 
 function App() {
   const webcamRef = useRef(null);
@@ -16,14 +21,23 @@ function App() {
   const runCoco = async () => {
     // 3. TODO - Load network 
     // e.g. const net = await cocossd.load();
+    // Create a detector.
+    const model = poseDetection.SupportedModels.BlazePose;
+    const detectorConfig = {
+      runtime: 'mediapipe',
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose',
+                    // or 'base/node_modules/@mediapipe/pose' in npm.
+      modelType: 'lite'
+    };
+    const detector = await poseDetection.createDetector(model, detectorConfig);
     
     //  Loop and detect hands
     setInterval(() => {
-      detect(net);
+      detect(detector);
     }, 10);
   };
 
-  const detect = async (net) => {
+  const detect = async (detector) => {
     // Check data is available
     if (
       typeof webcamRef.current !== "undefined" &&
@@ -45,12 +59,17 @@ function App() {
 
       // 4. TODO - Make Detections
       // e.g. const obj = await net.detect(video);
+      // Pass in a video stream to the model to detect poses.
+      const image = video;
+      const estimationConfig = {enableSmoothing: true};
+      const poses = await detector.estimatePoses(image, estimationConfig);
 
       // Draw mesh
       const ctx = canvasRef.current.getContext("2d");
 
       // 5. TODO - Update drawing utility
       // drawSomething(obj, ctx)  
+      drawResultsPoses(ctx, poses);
     }
   };
 
