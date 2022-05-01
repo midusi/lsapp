@@ -16,7 +16,7 @@ const MOVENET_CONFIG = {
 };
 
 STATE.modelConfig = {...MOVENET_CONFIG};
-STATE.model = poseDetection.SupportedModels.MoveNet;
+STATE.model = poseDetection.SupportedModels.BlazePose;
 
 const params = { STATE, DEFAULT_LINE_WIDTH, DEFAULT_RADIUS };
 

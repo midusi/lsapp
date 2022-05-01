@@ -9,7 +9,7 @@ const canvas = new Canvas();
 let keypoints = [];
 
 // Load Networks
-rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
+/*rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
   modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
 });
 
@@ -21,7 +21,34 @@ rec.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
 rec.loadFaceNet(faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
   runtime: 'tfjs',
   refineLandmarks: false
+});*/
+
+var detectorPoses, detectorHands, detectorFaces;
+(async function() {
+detectorPoses = await
+poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, {
+  runtime: 'mediapipe',
+  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose',
+                // or 'base/node_modules/@mediapipe/pose' in npm.
+  modelType: 'lite'
 });
+
+detectorHands = await
+handPoseDetection.createDetector(handPoseDetection.SupportedModels.MediaPipeHands, {
+  runtime: 'mediapipe',
+  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
+                // or 'base/node_modules/@mediapipe/hands' in npm.
+  modelType: 'lite'
+});
+
+detectorFaces = await
+faceLandmarksDetection.createDetector(faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
+  runtime: 'mediapipe',
+  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+                // or 'base/node_modules/@mediapipe/face_mesh' in npm.
+  refineLandmarks: false
+});
+})();
 
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
@@ -62,9 +89,9 @@ buttonStops.addEventListener('click', function() {
 async function runInference(canvas, camera) {
   const image = camera.getVideo();
 
-  const poses = await rec.estimatePoses(image, {flipHorizontal: false});
-  const hands = await rec.estimateHands(image, {flipHorizontal: false});
-  const faces = await rec.estimateFaces(image, {flipHorizontal: false});
+  const poses = await rec.estimatePoses(detectorPoses, image, {enableSmoothing: true, flipHorizontal: false});
+  const hands = await rec.estimateHands(detectorHands, image, {flipHorizontal: false});
+  const faces = await rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
 
   keypoints.push({
     posesKeypoints: poses, 
