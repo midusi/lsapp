@@ -89,20 +89,26 @@ buttonStops.addEventListener('click', function() {
 async function runInference(canvas, camera) {
   const image = camera.getVideo();
 
-  const poses = await rec.estimatePoses(detectorPoses, image, {enableSmoothing: true, flipHorizontal: false});
-  const hands = await rec.estimateHands(detectorHands, image, {flipHorizontal: false});
-  const faces = await rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
-
-  keypoints.push({
-    posesKeypoints: poses, 
-    handsKeypoints: hands,
-    facesKeypoints: faces,
-  });
+  const promisePoses = rec.estimatePoses(detectorPoses, image, {enableSmoothing: true, flipHorizontal: false});
+  const promiseHands = rec.estimateHands(detectorHands, image, {flipHorizontal: false});
+  const promiseFaces = rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
 
   canvas.drawCameraFrame(camera);
-  canvas.drawResultsPoses(poses);
-  canvas.drawResultsHands(hands);
-  canvas.drawResultsFaces(faces);
+
+  Promise.all([promisePoses, promiseHands, promiseFaces])
+  .then((responses) => {
+    const [poses, hands, faces] = responses;
+
+    keypoints.push({
+      posesKeypoints: poses, 
+      handsKeypoints: hands,
+      facesKeypoints: faces,
+    });
+
+    canvas.drawResultsPoses(poses);
+    canvas.drawResultsHands(hands);
+    canvas.drawResultsFaces(faces);
+  });
 
   updateFPS();
 
