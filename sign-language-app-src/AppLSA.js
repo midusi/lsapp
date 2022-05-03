@@ -87,13 +87,15 @@ buttonStops.addEventListener('click', function() {
 }, false);
 
 async function runInference(canvas, camera) {
+  canvas.clear();
+  
   const image = camera.getVideo();
 
   const promisePoses = rec.estimatePoses(detectorPoses, image, {enableSmoothing: true, flipHorizontal: false});
   const promiseHands = rec.estimateHands(detectorHands, image, {flipHorizontal: false});
   const promiseFaces = rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
 
-  canvas.drawCameraFrame(camera);
+  //canvas.drawCameraFrame(camera);
 
   Promise.all([promisePoses, promiseHands, promiseFaces])
   .then((responses) => {

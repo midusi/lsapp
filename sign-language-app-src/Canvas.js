@@ -11,6 +11,10 @@ export class Canvas {
     this.canvas.height = height;
   }
 
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   drawResultsPoses(poses) {
     drawResultsPoses(this.ctx, poses);
   }
@@ -23,7 +27,7 @@ export class Canvas {
     drawResultsFaces(this.ctx, faces, true, true);
   }
 
-  drawCameraFrame(camera) {
+  /*drawCameraFrame(camera) {
     this.ctx.drawImage(camera.getVideo(), 0,0, this.canvas.width, this.canvas.height);
-  }
+  }*/
 }

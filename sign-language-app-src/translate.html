@@ -51,12 +51,17 @@
     <br>
     <div class="badge bg-dark text-start mb-2 block" style="width: 72px;">FPS: <span id="fps"></span></div>
     <div id="canvas-wrap">
-      <video width="640" height="480" autoplay hidden></video>
-      <canvas width="640" height="480" style="transform: scaleX(-1);" class="img-thumbnail" style="margin: 1%;"></canvas>
+      <div id="separador" class="img-thumbnail"></div>
+
       <div id="overlay" class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
+
       <div id="downcounter"></div>
+
+      <video class="video" width="640" height="480" autoplay></video>
+
+      <canvas class="canvas" width="640" height="480" class="img-thumbnail"></canvas>
     </div>
     <hr>
   </div>

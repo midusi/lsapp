@@ -39,3 +39,32 @@ html {
   text-align: center;
   animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
 }
+
+.video {
+  transform: scaleX(-1);
+  margin: 1%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 325px - 0.5%);
+}
+
+.canvas {
+  transform: scaleX(-1);
+  margin: 1%;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 325px - 0.5%);
+  z-index: 10;
+  /*background-color:rgba(255,0,0,0.5);*/
+}
+
+#separador {
+  width: 660px;
+  height: 500px;
+  margin: 1%;
+
+  /*Center Div*/
+  margin-left: auto; 
+  margin-right: auto;
+}
