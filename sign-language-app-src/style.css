@@ -1,0 +1,70 @@
+body {
+  /*color: #f7fff6;*/
+  /*padding-top: 25px;*/
+  background-color: #f7fff6;
+}
+
+.footer-link {
+  transition: .4s;
+  color: rgba(255,255,255,0.55);
+}
+.footer-link:hover {
+  transition: .4s;
+  color: rgba(255,255,255,0.75);
+}
+
+html {
+  scroll-padding-top: 70px; /* height of sticky header */
+}
+
+#canvas-wrap { position: relative } /* Make this a positioned parent */
+#overlay     { position: absolute; top: calc(50% - 20px); left: calc(50% - 20px); }
+
+#downcounter { position: absolute; top: calc(50% - 68px); left: calc(50% - 24px); }
+
+@keyframes count {
+  0% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+.nums {
+  font-size: 5rem;
+  height: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
+}
+
+.video {
+  transform: scaleX(-1);
+  margin: 1%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 325px - 0.5%);
+}
+
+.canvas {
+  transform: scaleX(-1);
+  margin: 1%;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 325px - 0.5%);
+  z-index: 10;
+  /*background-color:rgba(255,0,0,0.5);*/
+}
+
+#separador {
+  width: 660px;
+  height: 500px;
+  margin: 1%;
+
+  /*Center Div*/
+  margin-left: auto; 
+  margin-right: auto;
+}
