@@ -62,7 +62,7 @@ camera.getVideo().addEventListener('loadeddata', function() {
               'Content-type' : 'application/json'
           },
           body: JSON.stringify({
-            keypoints: keypoints,
+            keypoints: keypoints, //[0]
             timestamp: new Date().toLocaleString()
           })
         })
@@ -100,6 +100,17 @@ async function runInference(canvas, camera) {
   Promise.all([promisePoses, promiseHands, promiseFaces])
   .then((responses) => {
     const [poses, hands, faces] = responses;
+
+    if (poses[0] != null) delete poses[0].keypoints3D;
+    if (hands[0] != null) delete hands[0].keypoints3D;
+    if (hands[1] != null) delete hands[1].keypoints3D;
+    if (faces[0] != null) delete faces[0].box;
+    //hands.forEach((hand) => delete hand.keypoints3D);
+
+    if (poses[0] != null) poses[0].keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
+    if (hands[0] != null) hands[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    if (hands[1] != null) hands[1].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    if (faces[0] != null) faces[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
 
     keypoints.push({
       posesKeypoints: poses, 

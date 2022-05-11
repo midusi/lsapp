@@ -24,7 +24,7 @@ export class Canvas {
   }
 
   drawResultsFaces(faces) {
-    drawResultsFaces(this.ctx, faces, true, true);
+    drawResultsFaces(this.ctx, faces, false, true);
   }
 
   /*drawCameraFrame(camera) {
