@@ -55,10 +55,9 @@ camera.getVideo().addEventListener('loadeddata', function() {
     runInference(canvas, camera);
     setTimeout(
       setInterval(function() {
-        fetch('https://jsonplaceholder.typicode.com/posts', {
+        fetch('http://127.0.0.1:5000/model', {
           method: 'POST',
           headers: {
-              'Accept': 'application/json, text/plain, */*',
               'Content-type' : 'application/json'
           },
           body: JSON.stringify({
@@ -101,16 +100,28 @@ async function runInference(canvas, camera) {
   .then((responses) => {
     const [poses, hands, faces] = responses;
 
-    if (poses[0] != null) delete poses[0].keypoints3D;
-    if (hands[0] != null) delete hands[0].keypoints3D;
-    if (hands[1] != null) delete hands[1].keypoints3D;
-    if (faces[0] != null) delete faces[0].box;
-    //hands.forEach((hand) => delete hand.keypoints3D);
-
-    if (poses[0] != null) poses[0].keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
-    if (hands[0] != null) hands[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
-    if (hands[1] != null) hands[1].keypoints.forEach((key) => { delete key.z; delete key.name; });
-    if (faces[0] != null) faces[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    if (poses[0] != null) 
+    {
+      delete poses[0].keypoints3D;
+      poses[0].keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
+    }
+    if (hands[0] != null) 
+    {
+      delete hands[0].keypoints3D;
+      delete hands[0].score;
+      hands[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    }
+    if (hands[1] != null) 
+    {
+      delete hands[1].keypoints3D;
+      delete hands[1].score;
+      hands[1].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    }
+    if (faces[0] != null) 
+    {
+      delete faces[0].box;
+      faces[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
+    }
 
     keypoints.push({
       posesKeypoints: poses, 
