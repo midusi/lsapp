@@ -100,34 +100,101 @@ async function runInference(canvas, camera) {
   .then((responses) => {
     const [poses, hands, faces] = responses;
 
+    //Poses
     if (poses[0] != null) 
     {
       delete poses[0].keypoints3D;
       poses[0].keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
     }
-    if (hands[0] != null) 
+    else 
+    {
+      poses[0] = {
+        keypoints: new Array(33).fill({x: 0.0, y: 0.0})
+      }
+    }
+    //Hands
+    if (hands[0] != null) //Right
     {
       delete hands[0].keypoints3D;
       delete hands[0].score;
       hands[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
     }
-    if (hands[1] != null) 
+    else
+    {
+      hands[0] = {
+        handedness: "Right",
+        keypoints: new Array(21).fill({x: 0.0, y: 0.0})
+      }
+    }
+    if (hands[1] != null) //Left
     {
       delete hands[1].keypoints3D;
       delete hands[1].score;
       hands[1].keypoints.forEach((key) => { delete key.z; delete key.name; });
     }
+    else
+    {
+      hands[1] = {
+        handedness: "Left",
+        keypoints: new Array(21).fill({x: 0.0, y: 0.0})
+      }
+    }
+    //Faces
     if (faces[0] != null) 
     {
       delete faces[0].box;
       faces[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
     }
+    else
+    {
+      faces[0] = {
+        keypoints: new Array(468).fill({x: 0.0, y: 0.0})
+      }
+    }
 
-    keypoints.push({
+    /*keypoints.push({
       posesKeypoints: poses, 
       handsKeypoints: hands,
       facesKeypoints: faces,
-    });
+    });*/
+
+    keypoints.push(
+      [
+        //body
+        poses[0].keypoints[0], //Nose
+        poses[0].keypoints[2], //LEye
+        poses[0].keypoints[5], //REye
+        poses[0].keypoints[7], //LEar
+        poses[0].keypoints[8], //REar
+        poses[0].keypoints[11], //LShoulder
+        poses[0].keypoints[12], //RShoulder
+        poses[0].keypoints[13], //LElbow
+        poses[0].keypoints[14], //RElbow
+        poses[0].keypoints[15], //LWrist
+        poses[0].keypoints[16], //RWrist
+        poses[0].keypoints[23], //LHip
+        poses[0].keypoints[24], //RHip
+        poses[0].keypoints[25], //LKnee
+        poses[0].keypoints[26], //Rknee
+        poses[0].keypoints[27], //LAnkle
+        poses[0].keypoints[28], //RAnkle
+        {x: 0.0, y: 0.0}, //Head (NOT EXIST)
+        {x: 0.0, y: 0.0}, //Neck (NOT EXIST)
+        {x: 0.0, y: 0.0}, //Hip  (NOT EXIST)
+        poses[0].keypoints[31], //LBigToe
+        poses[0].keypoints[32], //RBigToe
+        {x: 0.0, y: 0.0}, //LSmallToe (NOT EXIST)
+        {x: 0.0, y: 0.0}, //RSmallToe (NOT EXIST)
+        poses[0].keypoints[29], //LHeel
+        poses[0].keypoints[30], //RHeel
+        //face (ToDo)
+        ...faces[0].keypoints,
+        //left hand
+        ...hands[1].keypoints,
+        //right hand
+        ...hands[0].keypoints,
+      ]
+    )
 
     canvas.drawResultsPoses(poses);
     canvas.drawResultsHands(hands);
