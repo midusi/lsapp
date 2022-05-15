@@ -48,6 +48,39 @@ faceLandmarksDetection.createDetector(faceLandmarksDetection.SupportedModels.Med
                 // or 'base/node_modules/@mediapipe/face_mesh' in npm.
   refineLandmarks: false
 });
+
+//const image = document.createElement('canvas').getContext('2d').getImageData(0,0,1,1);
+const image = new Image(1,1);
+image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=';
+
+const progressBar = document.querySelector('.progress-bar');
+
+//Create WebGL context at start
+await (rec.estimatePoses(detectorPoses, image, {}))
+.then(async () => {
+  progressBar.style.width = '50%';
+  progressBar.textContent = 'Cargando Modelos: 50%';
+  await new Promise(r => setTimeout(r, 1000)); //Sleep
+});
+await (rec.estimateHands(detectorHands, image, {}))
+.then(async () => {
+  progressBar.style.width = '75%';
+  progressBar.textContent = 'Cargando Modelos: 75%';
+  await new Promise(r => setTimeout(r, 1000)); //Sleep
+});
+await (rec.estimateFaces(detectorFaces, image, {}))
+.then(async () => {
+  progressBar.style.width = '100%';
+  progressBar.textContent = 'Cargando Modelos: 100%';
+  await new Promise(r => setTimeout(r, 1000)); //Sleep
+});
+
+//$('.toast').toast('show')
+new bootstrap.Toast(document.querySelector('.toast')).show();
+await new Promise(r => setTimeout(r, 2000)); //Sleep
+document.querySelector('.progress').classList.add("d-none");
+document.querySelector("#btn-start-webcam").disabled = false;
+document.querySelector("#btn-stops-webcam").disabled = false;
 })();
 
 // Event Listeners
