@@ -118,6 +118,8 @@ buttonStops.addEventListener('click', function() {
   camera.stops();
 }, false);
 
+const ctx = document.querySelector('canvas').getContext('2d');
+
 async function runInference(canvas, camera) {
   canvas.clear();
   
@@ -220,8 +222,82 @@ async function runInference(canvas, camera) {
         {x: 0.0, y: 0.0}, //RSmallToe (NOT EXIST)
         poses[0].keypoints[29], //LHeel
         poses[0].keypoints[30], //RHeel
-        //face (ToDo)
-        ...faces[0].keypoints,
+        //face
+        //jaw
+        faces[0].keypoints[143],//0
+        faces[0].keypoints[116],//1
+        faces[0].keypoints[123],//2
+        faces[0].keypoints[213],//3
+        faces[0].keypoints[192],//4
+        faces[0].keypoints[169],//5
+        faces[0].keypoints[170],//6
+        faces[0].keypoints[171],//7
+        faces[0].keypoints[175],//8
+        faces[0].keypoints[396],//9
+        faces[0].keypoints[395],//10
+        faces[0].keypoints[394],//11
+        faces[0].keypoints[416],//12
+        faces[0].keypoints[433],//13
+        faces[0].keypoints[152],//14
+        faces[0].keypoints[345],//15
+        faces[0].keypoints[372],//16
+        //right eyebrow
+        faces[0].keypoints[46],//17
+        faces[0].keypoints[63],//18
+        faces[0].keypoints[52],//19
+        faces[0].keypoints[65],//20
+        faces[0].keypoints[55],//21
+        //left eyebrow
+        faces[0].keypoints[285],//22
+        faces[0].keypoints[295],//23
+        faces[0].keypoints[282],//24
+        faces[0].keypoints[293],//25
+        faces[0].keypoints[276],//26
+        //nose
+        faces[0].keypoints[168],//27
+        faces[0].keypoints[6],//28
+        faces[0].keypoints[195],//29
+        faces[0].keypoints[1],//30
+        faces[0].keypoints[235],//31
+        faces[0].keypoints[99],//32
+        faces[0].keypoints[2],//33
+        faces[0].keypoints[328],//34
+        faces[0].keypoints[455],//35
+        //right eye
+        faces[0].keypoints[33],//36
+        faces[0].keypoints[160],//37
+        faces[0].keypoints[158],//38
+        faces[0].keypoints[133],//39
+        faces[0].keypoints[153],//40
+        faces[0].keypoints[144],//41
+        //left eye
+        faces[0].keypoints[362],//42
+        faces[0].keypoints[385],//43
+        faces[0].keypoints[387],//44
+        faces[0].keypoints[263],//45
+        faces[0].keypoints[373],//46
+        faces[0].keypoints[380],//47
+        //mouth
+        faces[0].keypoints[186],//48
+        faces[0].keypoints[40],//49
+        faces[0].keypoints[37],//50
+        faces[0].keypoints[11],//51
+        faces[0].keypoints[267],//52
+        faces[0].keypoints[270],//53
+        faces[0].keypoints[410],//54
+        faces[0].keypoints[321],//55
+        faces[0].keypoints[314],//56
+        faces[0].keypoints[17],//57
+        faces[0].keypoints[84],//58
+        faces[0].keypoints[91],//59
+        faces[0].keypoints[62],//60
+        faces[0].keypoints[41],//61
+        faces[0].keypoints[12],//62
+        faces[0].keypoints[271],//63
+        faces[0].keypoints[29],//64
+        faces[0].keypoints[403],//65
+        faces[0].keypoints[15],//66
+        faces[0].keypoints[179],//67
         //left hand
         ...hands[1].keypoints,
         //right hand
@@ -229,9 +305,14 @@ async function runInference(canvas, camera) {
       ]
     )
 
-    canvas.drawResultsPoses(poses);
+    /*canvas.drawResultsPoses(poses);
     canvas.drawResultsHands(hands);
-    canvas.drawResultsFaces(faces);
+    canvas.drawResultsFaces(faces);*/
+
+    keypoints[keypoints.length-1].forEach((keypoint) => {
+      ctx.fillStyle = 'orange';
+      ctx.fillRect(keypoint.x, keypoint.y, 5, 5);
+    });
   });
 
   updateFPS();

@@ -1,0 +1,45 @@
+//26 body keypoints
+    {0,  "Nose"},               0
+    {1,  "LEye"},               2
+    {2,  "REye"},               5
+    {3,  "LEar"},               7
+    {4,  "REar"},               8
+    {5,  "LShoulder"},          11
+    {6,  "RShoulder"},          12
+    {7,  "LElbow"},             13
+    {8,  "RElbow"},             14
+    {9,  "LWrist"},             15
+    {10, "RWrist"},             16
+    {11, "LHip"},               23
+    {12, "RHip"},               24
+    {13, "LKnee"},              25
+    {14, "Rknee"},              26
+    {15, "LAnkle"},             27
+    {16, "RAnkle"},             28
+    {17,  "Head"},              NO EXISTE (PROM E/ 2 Y 1 + DIST E/ 0 y 18 (DEPENDENCIA EN CALCULO))
+    {18,  "Neck"},              NO EXISTE (CENTROIDE E/ 0 6 Y 5)
+    {19,  "Hip"},               NO EXISTE (PROM E/ 12 Y 11)
+    {20, "LBigToe"},            31
+    {21, "RBigToe"},            32
+    {22, "LSmallToe"},          NO EXISTE (IRRELEVANTE, USAR 31)
+    {23, "RSmallToe"},          NO EXISTE (IRRELEVANTE, USAR 32)
+    {24, "LHeel"},              29
+    {25, "RHeel"},              30
+    //face
+    {26-93, 68 Face Keypoints}
+    //left hand
+    {94-114, 21 Left Hand Keypoints}
+    //right hand
+    {115-135, 21 Right Hand Keypoints}
+
+    /*//Neck Keypoint Calc
+    const neck_x = (poses[0].keypoints[0].x + poses[0].keypoints[12].x + poses[0].keypoints[11].x) / 3;
+    const neck_y = (poses[0].keypoints[0].y + poses[0].keypoints[12].y + poses[0].keypoints[11].y) / 3;
+
+    //Head Keypoint Calc
+    const head_x = ((poses[0].keypoints[2].x + poses[0].keypoints[5].x) / 2) + (poses[0].keypoints[0].x - neck_x);
+    const head_y = ((poses[0].keypoints[2].y + poses[0].keypoints[5].y) / 2) + (poses[0].keypoints[0].y - neck_y);
+
+    //Hip Keypoint Calc
+    let hip_x = (poses[0].keypoints[24].x + poses[0].keypoints[23].x) / 2;
+    let hip_y = (poses[0].keypoints[24].y + poses[0].keypoints[23].y) / 2;*/
