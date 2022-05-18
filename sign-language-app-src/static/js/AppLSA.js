@@ -6,6 +6,7 @@ import { updateFPS } from "./fpsModule.js";
 const camera = new Camera();
 const canvas = new Canvas();
 
+let id = 0;
 let frames = [];
 
 // Load Networks
@@ -83,69 +84,81 @@ document.querySelector("#btn-start-webcam").disabled = false;
 document.querySelector("#btn-stops-webcam").disabled = false;
 })();
 
-const HALPE_SIZE = 136; //Keypoints
-const MIN_LENGTH = 35; //THRESHOLD
-const MAX_LENGTH = 200; //75
+const MAX_FRAMES = 75; // 200
+const MIN_FRAMES = MAX_FRAMES/2; // Threshold of frames
+const HALPE_SIZE = 136; // Number of keypoints
 
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
     runInference(canvas, camera);
     setTimeout(
       //setInterval(
-      function() {
-        if (frames.length > MIN_LENGTH) {
-          //if (frames.length > MAX_LENGTH) {
-            fetch('http://127.0.0.1:5000/model', {
-              method: 'POST',
-              headers: {
-                  'Content-type' : 'application/json'
-              },
-              body: JSON.stringify({
-                frames: frames, //[0]
-                timestamp: new Date().toLocaleString()
-              })
-            })
-            .then((res) => res.json())
-            .then((data) => console.log(data));
-            //frames = [];
-          //} else {
-            let auxFrames = frames.slice(0); //Copy Array
-            let framesInterpolateds = []
-            //Sort descendent
-            auxFrames.sort((a,b) => (a.delay > b.delay) ? -1 : ((b.delay > a.delay) ? 1 : 0))
-            console.log(auxFrames)
-            let qtyFramesLeft = MAX_LENGTH-frames.length;
-            for (let i = 0; i < qtyFramesLeft; i++){
-              //Interpolate
+        function() {
+          if (!(frames.length > MIN_FRAMES)) //Guard Clause
+          {
+            alert("Tu dispositivo no logró captar los fotogramas suficientes, inténtalo de nuevo.");
+            window.location.reload(); return;
+          }
+          if (frames.length < MAX_FRAMES) //Interpolation
+          {
+            let framesInterpolated = [];
 
-              let keypointsInterpolated = []
-              let frameAct = frames[auxFrames[i].id]
-              let frameAnt = frames[auxFrames[i].id-1]
+            // Sort descendent by delay between frames
+            let orderedFrames = frames.slice(0); //Copy Array
+            orderedFrames.sort((a,b) => (a.delay > b.delay) ? -1 : ((b.delay > a.delay) ? 1 : 0));
 
-              for (let j = 0; j < HALPE_SIZE; j++){
+            const numFramesLeft = MAX_FRAMES - frames.length;
+            for (let i = 0; i < numFramesLeft; i++) {
+
+              let keypointsInterpolated = [];
+              const frameAct = frames[orderedFrames[i].id];
+              const frameAnt = frames[orderedFrames[i].id - 1];
+
+              for (let j = 0; j < HALPE_SIZE; j++) {
                 keypointsInterpolated.push({
                   x: (frameAct.keypoints[j].x + frameAnt.keypoints[j].x)*0.5,
-                  y: (frameAct.keypoints[j].y + frameAnt.keypoints[j].y)*0.5,
-                })
+                  y: (frameAct.keypoints[j].y + frameAnt.keypoints[j].y)*0.5
+                });
               }
 
-              const frameInterpolated = {
-                id: (-1)*frameAct.id,
-                keypoints: keypointsInterpolated,
-                timestamp: 0,
-                delay: 0,
-              }
+              const frameInterpolated = 
+                { id: (-1) * frameAct.id, 
+                  keypoints: keypointsInterpolated, timestamp: 0, delay: 0 };
 
-              framesInterpolateds.push(frameInterpolated)
+              framesInterpolated.push(frameInterpolated);
             }
-            framesInterpolateds.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0))
-            for (let i = 0; i < framesInterpolateds.length; i++){
-              frames.splice(framesInterpolateds[i].id * (-1) + i, 0, framesInterpolateds[i]);
+
+            // Sort "ascendent" (due to -1) by id
+            framesInterpolated.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0));
+
+            for (let i = 0; i < framesInterpolated.length; i++) {
+              // Insert interpolated frames into the frames array in order
+              frames.splice(framesInterpolated[i].id * (-1) + i, 0, framesInterpolated[i]);
             }
-            console.log("frames+interpolacion", frames)
-          //} 
+          }
+
+          // Keep only keypoints to reduce the size of the packet sent to the API
+          frames.forEach((frame) => 
+            { delete frame.id; 
+              delete frame.timestamp; delete frame.delay; });
+
+          fetch('http://127.0.0.1:5000/model', {
+            method: 'POST',
+            headers: {
+                'Content-type' : 'application/json'
+            },
+            body: JSON.stringify({
+              frames: frames, //frames[0]
+              timestamp: new Date().toLocaleString()
+            })
+          })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+
+          id = 0;
+          frames = []; //Clear array to take the next video
         }
-      }//, 5000)
+      //, 5000)
     , 5000);
 }, false);
 
@@ -163,7 +176,6 @@ buttonStops.addEventListener('click', function() {
 }, false);
 
 const ctx = document.querySelector('canvas').getContext('2d');
-let id = 0;
 
 async function runInference(canvas, camera) {
   canvas.clear();
@@ -352,7 +364,9 @@ async function runInference(canvas, camera) {
       ],
       timestamp: Date.now()
     });
-    frames[frames.length-1]['delay'] = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
+    //Add delay property as the difference between two frames
+    frames[frames.length-1]['delay'] 
+      = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
 
     /*canvas.drawResultsPoses(poses);
     canvas.drawResultsHands(hands);

@@ -1,4 +1,4 @@
-import { drawResultsPoses, drawResultsHands, drawResultsFaces } from "./utilities.js";
+//import { drawResultsPoses, drawResultsHands, drawResultsFaces } from "./utilities.js";
 
 export class Canvas {
   constructor() {
@@ -15,7 +15,7 @@ export class Canvas {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawResultsPoses(poses) {
+  /*drawResultsPoses(poses) {
     drawResultsPoses(this.ctx, poses);
   }
 
@@ -25,7 +25,7 @@ export class Canvas {
 
   drawResultsFaces(faces) {
     drawResultsFaces(this.ctx, faces, false, true);
-  }
+  }*/
 
   /*drawCameraFrame(camera) {
     this.ctx.drawImage(camera.getVideo(), 0,0, this.canvas.width, this.canvas.height);
