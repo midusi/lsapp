@@ -96,8 +96,9 @@ camera.getVideo().addEventListener('loadeddata', function() {
         function() {
           if (!(frames.length > MIN_FRAMES)) //Guard Clause
           {
-            alert("Tu dispositivo no logró captar los fotogramas suficientes, inténtalo de nuevo.");
-            window.location.reload(); return;
+            //alert("Tu dispositivo no logró captar los fotogramas suficientes, inténtalo de nuevo.");
+            //window.location.reload(true); return;
+            document.querySelector('.alert').classList.remove("d-none"); return;
           }
           if (frames.length < MAX_FRAMES) //Interpolation
           {
@@ -250,6 +251,14 @@ async function runInference(canvas, camera) {
       facesKeypoints: faces,
     });*/
 
+    //Neck Keypoint Calc
+    const neck_x = (poses[0].keypoints[0].x + poses[0].keypoints[12].x + poses[0].keypoints[11].x) / 3;
+    const neck_y = (poses[0].keypoints[0].y + poses[0].keypoints[12].y + poses[0].keypoints[11].y) / 3;
+
+    //Hip Keypoint Calc
+    let hip_x = (poses[0].keypoints[24].x + poses[0].keypoints[23].x) / 2;
+    let hip_y = (poses[0].keypoints[24].y + poses[0].keypoints[23].y) / 2;
+
     frames.push({
       id: id++,
       keypoints: 
@@ -272,13 +281,13 @@ async function runInference(canvas, camera) {
         poses[0].keypoints[26], //Rknee
         poses[0].keypoints[27], //LAnkle
         poses[0].keypoints[28], //RAnkle
-        {x: 0.0, y: 0.0}, //Head (NOT EXIST)
-        {x: 0.0, y: 0.0}, //Neck (NOT EXIST)
-        {x: 0.0, y: 0.0}, //Hip  (NOT EXIST)
+        faces[0].keypoints[10],//{x: 0.0, y: 0.0}, //Head (NOT EXIST)
+        {x: neck_x, y: neck_y},//{x: 0.0, y: 0.0}, //Neck (NOT EXIST)
+        {x: hip_x, y: hip_y},//{x: 0.0, y: 0.0}, //Hip  (NOT EXIST)
         poses[0].keypoints[31], //LBigToe
         poses[0].keypoints[32], //RBigToe
-        {x: 0.0, y: 0.0}, //LSmallToe (NOT EXIST)
-        {x: 0.0, y: 0.0}, //RSmallToe (NOT EXIST)
+        poses[0].keypoints[31],//{x: 0.0, y: 0.0}, //LSmallToe (NOT EXIST)
+        poses[0].keypoints[32],//{x: 0.0, y: 0.0}, //RSmallToe (NOT EXIST)
         poses[0].keypoints[29], //LHeel
         poses[0].keypoints[30], //RHeel
         //face
