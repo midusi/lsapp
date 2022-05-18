@@ -6,7 +6,7 @@ import { updateFPS } from "./fpsModule.js";
 const camera = new Camera();
 const canvas = new Canvas();
 
-let keypoints = [];
+let frames = [];
 
 // Load Networks
 /*rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
@@ -83,25 +83,69 @@ document.querySelector("#btn-start-webcam").disabled = false;
 document.querySelector("#btn-stops-webcam").disabled = false;
 })();
 
+const HALPE_SIZE = 136; //Keypoints
+const MIN_LENGTH = 35; //THRESHOLD
+const MAX_LENGTH = 200; //75
+
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
     runInference(canvas, camera);
     setTimeout(
-      setInterval(function() {
-        fetch('http://127.0.0.1:5000/model', {
-          method: 'POST',
-          headers: {
-              'Content-type' : 'application/json'
-          },
-          body: JSON.stringify({
-            keypoints: keypoints, //[0]
-            timestamp: new Date().toLocaleString()
-          })
-        })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
-        keypoints = [];
-      }, 5000)
+      //setInterval(
+      function() {
+        if (frames.length > MIN_LENGTH) {
+          //if (frames.length > MAX_LENGTH) {
+            fetch('http://127.0.0.1:5000/model', {
+              method: 'POST',
+              headers: {
+                  'Content-type' : 'application/json'
+              },
+              body: JSON.stringify({
+                frames: frames, //[0]
+                timestamp: new Date().toLocaleString()
+              })
+            })
+            .then((res) => res.json())
+            .then((data) => console.log(data));
+            //frames = [];
+          //} else {
+            let auxFrames = frames.slice(0); //Copy Array
+            let framesInterpolateds = []
+            //Sort descendent
+            auxFrames.sort((a,b) => (a.delay > b.delay) ? -1 : ((b.delay > a.delay) ? 1 : 0))
+            console.log(auxFrames)
+            let qtyFramesLeft = MAX_LENGTH-frames.length;
+            for (let i = 0; i < qtyFramesLeft; i++){
+              //Interpolate
+
+              let keypointsInterpolated = []
+              let frameAct = frames[auxFrames[i].id]
+              let frameAnt = frames[auxFrames[i].id-1]
+
+              for (let j = 0; j < HALPE_SIZE; j++){
+                keypointsInterpolated.push({
+                  x: (frameAct.keypoints[j].x + frameAnt.keypoints[j].x)*0.5,
+                  y: (frameAct.keypoints[j].y + frameAnt.keypoints[j].y)*0.5,
+                })
+              }
+
+              const frameInterpolated = {
+                id: (-1)*frameAct.id,
+                keypoints: keypointsInterpolated,
+                timestamp: 0,
+                delay: 0,
+              }
+
+              framesInterpolateds.push(frameInterpolated)
+            }
+            framesInterpolateds.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0))
+            for (let i = 0; i < framesInterpolateds.length; i++){
+              frames.splice(framesInterpolateds[i].id * (-1) + i, 0, framesInterpolateds[i]);
+            }
+            console.log("frames+interpolacion", frames)
+          //} 
+        }
+      }//, 5000)
     , 5000);
 }, false);
 
@@ -119,6 +163,7 @@ buttonStops.addEventListener('click', function() {
 }, false);
 
 const ctx = document.querySelector('canvas').getContext('2d');
+let id = 0;
 
 async function runInference(canvas, camera) {
   canvas.clear();
@@ -187,13 +232,15 @@ async function runInference(canvas, camera) {
       }
     }
 
-    /*keypoints.push({
+    /*frames.push({
       posesKeypoints: poses, 
       handsKeypoints: hands,
       facesKeypoints: faces,
     });*/
 
-    keypoints.push(
+    frames.push({
+      id: id++,
+      keypoints: 
       [
         //body
         poses[0].keypoints[0], //Nose
@@ -302,14 +349,16 @@ async function runInference(canvas, camera) {
         ...hands[1].keypoints,
         //right hand
         ...hands[0].keypoints,
-      ]
-    )
+      ],
+      timestamp: Date.now()
+    });
+    frames[frames.length-1]['delay'] = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
 
     /*canvas.drawResultsPoses(poses);
     canvas.drawResultsHands(hands);
     canvas.drawResultsFaces(faces);*/
 
-    keypoints[keypoints.length-1].forEach((keypoint) => {
+    frames[frames.length-1].keypoints.forEach((keypoint) => {
       ctx.fillStyle = 'orange';
       ctx.fillRect(keypoint.x, keypoint.y, 5, 5);
     });
