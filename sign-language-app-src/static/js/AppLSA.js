@@ -1,7 +1,8 @@
-import { updateFPS, fpsElement } from "./fpsModule.js"; 
+import { updateFPS, fpsElement } from "./fpsModule.js";
 import { Camera } from './Camera.js';
 import { Canvas } from './Canvas.js';
 import * as rec from './Recognition.js';
+import { startTimer } from "./timerModule.js";
 
 const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
@@ -77,11 +78,10 @@ new bootstrap.Toast(toastModelsElement).show();
 
 // Event listeners
 camera.getVideo().addEventListener('loadeddata', function() {
-    runInference(canvas, camera);
     captureFrames(5000);
 }, false);
 
-startButtonElement.addEventListener('click', function() { 
+startButtonElement.addEventListener('click', function() {
   spinOverlayElement.classList.add('d-none');
   startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
@@ -91,6 +91,10 @@ startButtonElement.addEventListener('click', function() {
 
 // General purpose functions
 function captureFrames(milliseconds) {
+  camera.getVideo().hidden = false;
+
+  startTimer(milliseconds);
+
   const clearAll = function() {
     window.cancelAnimationFrame(rafId);
     camera.stops();
@@ -103,8 +107,8 @@ function captureFrames(milliseconds) {
     spinOverlayElement.classList.remove('d-none');
   }
 
-  camera.getVideo().hidden = false;
-  
+  runInference(canvas, camera);
+
   setTimeout(function() {
     if (frames.length < MIN_FRAMES) {
       new bootstrap.Toast(toastFramesElement).show();
@@ -117,8 +121,8 @@ function captureFrames(milliseconds) {
     }
 
     // Keep only 'keypoints' to reduce the size of the packet sent to the API
-    frames.forEach((frame) => { 
-      delete frame.id; delete frame.timestamp; delete frame.delay; 
+    frames.forEach((frame) => {
+      delete frame.id; delete frame.timestamp; delete frame.delay;
       frame.keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
     });
 
@@ -149,8 +153,8 @@ function interpolateFrames() {
       });
     }
 
-    const frameInterpolated = 
-      { id: (-1) * frameAct.id, 
+    const frameInterpolated =
+      { id: (-1) * frameAct.id,
         keypoints: keypointsInterpolated, timestamp: 0, delay: 0 };
 
     framesInterpolated.push(frameInterpolated);
@@ -180,7 +184,7 @@ function sendKeypointsToAPI() {
   .then((data) => console.log(data));
 }
 
-async function runInference(canvas, camera) {  
+async function runInference(canvas, camera) {
   const image = camera.getVideo();
 
   canvas.clear();
@@ -210,7 +214,7 @@ async function runInference(canvas, camera) {
 
     frames.push({
       id: id++,
-      keypoints: 
+      keypoints:
       [
         //body
         poses[0].keypoints[0], //Nose
@@ -323,7 +327,7 @@ async function runInference(canvas, camera) {
       timestamp: Date.now()
     });
     // Add 'delay' property as the difference between two frames
-    frames[frames.length-1]['delay'] 
+    frames[frames.length-1]['delay']
       = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
 
     canvas.drawKeypoints(frames[frames.length-1].keypoints);
@@ -335,20 +339,20 @@ async function runInference(canvas, camera) {
 }
 
 function countdown( parent, callback ){
-  
+
   // This is the function we will call every 1000 ms using setInterval
-  
+
   function count(){
 
     if( paragraph ){
-      
+
       // Remove the paragraph if there is one
       paragraph.remove();
 
     }
 
     if( texts.length === 0 ){
-      
+
       // If we ran out of text, use the callback to get started
       // Also, remove the interval
       // Also, return since we dont want this function to run anymore.
@@ -357,11 +361,11 @@ function countdown( parent, callback ){
       return;
 
     }
-  
+
     // Get the first item of the array out of the array.
     // Your array is now one item shorter.
     var text = texts.shift();
-  
+
     // Create a paragraph to add to the DOM
     // This new paragraph will trigger an animation
     paragraph = document.createElement("p");
@@ -371,13 +375,13 @@ function countdown( parent, callback ){
     parent.appendChild( paragraph );
 
   }
-  
+
   // These are all the text we want to display
   var texts = ['3', '2', '1'];
-  
+
   // This will store the paragraph we are currently displaying
   var paragraph = null;
-  
+
   // Initiate an interval, but store it in a variable so we can remove it later.
   var interval = setInterval( count, 1000 );
 

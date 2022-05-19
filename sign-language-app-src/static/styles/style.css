@@ -59,12 +59,12 @@ html {
   /*background-color:rgba(255,0,0,0.5);*/
 }
 
-#separador {
+#canvas-placeholder {
   width: 660px;
   height: 500px;
   margin: 1%;
 
   /*Center Div*/
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
 }

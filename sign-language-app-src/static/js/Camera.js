@@ -34,7 +34,7 @@ export class Camera {
         });
     } else {
       console.log("getUserMedia not supported");
-    }  
+    }
   }
 
   stops() {
