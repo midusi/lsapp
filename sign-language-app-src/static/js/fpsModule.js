@@ -4,7 +4,7 @@ window.requestAnimationFrame = (function() {
   };
 })();
 
-let fpsElement = document.getElementById("fps");
+export let fpsElement = document.getElementById("fps");
 let then = Date.now() / 1000;  // get time in seconds
 
 export function updateFPS() {
