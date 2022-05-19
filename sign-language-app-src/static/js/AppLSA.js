@@ -3,27 +3,27 @@ import { Canvas } from './Canvas.js';
 import * as rec from './Recognition.js';
 import { updateFPS } from "./fpsModule.js"; 
 
+const MAX_FRAMES = 75; // 200
+const MIN_FRAMES = MAX_FRAMES/2; // Threshold of frames
+const HALPE_SIZE = 136; // Number of keypoints
+
 const camera = new Camera();
 const canvas = new Canvas();
 
+let captureModeOn = true;
+let firstTime = true;
 let id = 0;
 let frames = [];
+let rafId;
+
+const buttonStart = document.querySelector('#btn-start-webcam');
+const overlaySpin = document.querySelector('#overlay');
+const progressBar = document.querySelector('.progress-bar');
+const progressBarDiv = document.querySelector('.progress');
+const toastModelsNotification = document.querySelector('#toastModels');
+const toastFramesNotification = document.querySelector('#toastFrames');
 
 // Load Networks
-/*rec.loadPoseNet(poseDetection.SupportedModels.MoveNet, {
-  modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
-});
-
-rec.loadHandNet(handPoseDetection.SupportedModels.MediaPipeHands, {
-  runtime: 'tfjs',
-  modelType: 'lite'
-});
-
-rec.loadFaceNet(faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
-  runtime: 'tfjs',
-  refineLandmarks: false
-});*/
-
 var detectorPoses, detectorHands, detectorFaces;
 (async function() {
 detectorPoses = await
@@ -50,25 +50,23 @@ faceLandmarksDetection.createDetector(faceLandmarksDetection.SupportedModels.Med
   refineLandmarks: false
 });
 
-//const image = document.createElement('canvas').getContext('2d').getImageData(0,0,1,1);
-const image = new Image(1,1);
-image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=';
-
-const progressBar = document.querySelector('.progress-bar');
-
 //Create WebGL context at start
+const image = document.createElement('canvas').getContext('2d').getImageData(0,0,1,1);
+
 await (rec.estimatePoses(detectorPoses, image, {}))
 .then(async () => {
   progressBar.style.width = '50%';
   progressBar.textContent = 'Cargando Modelos: 50%';
   await new Promise(r => setTimeout(r, 1000)); //Sleep
 });
+
 await (rec.estimateHands(detectorHands, image, {}))
 .then(async () => {
   progressBar.style.width = '75%';
   progressBar.textContent = 'Cargando Modelos: 75%';
   await new Promise(r => setTimeout(r, 1000)); //Sleep
 });
+
 await (rec.estimateFaces(detectorFaces, image, {}))
 .then(async () => {
   progressBar.style.width = '100%';
@@ -76,107 +74,77 @@ await (rec.estimateFaces(detectorFaces, image, {}))
   await new Promise(r => setTimeout(r, 1000)); //Sleep
 });
 
-//$('.toast').toast('show')
-new bootstrap.Toast(document.querySelector('.toast')).show();
 await new Promise(r => setTimeout(r, 2000)); //Sleep
-document.querySelector('.progress').classList.add("d-none");
-document.querySelector("#btn-start-webcam").disabled = false;
-document.querySelector("#btn-stops-webcam").disabled = false;
-})();
 
-const MAX_FRAMES = 75; // 200
-const MIN_FRAMES = MAX_FRAMES/2; // Threshold of frames
-const HALPE_SIZE = 136; // Number of keypoints
+new bootstrap.Toast(toastModelsNotification).show();
+progressBarDiv.remove();
+buttonStart.disabled = false;
+})();
 
 // Event Listeners
 camera.getVideo().addEventListener('loadeddata', function() {
     runInference(canvas, camera);
-    setTimeout(
-      //setInterval(
-        function() {
-          if (!(frames.length > MIN_FRAMES)) //Guard Clause
-          {
-            //alert("Tu dispositivo no logró captar los fotogramas suficientes, inténtalo de nuevo.");
-            //window.location.reload(true); return;
-            document.querySelector('.alert').classList.remove("d-none"); return;
-          }
-          if (frames.length < MAX_FRAMES) //Interpolation
-          {
-            let framesInterpolated = [];
-
-            // Sort descendent by delay between frames
-            let orderedFrames = frames.slice(0); //Copy Array
-            orderedFrames.sort((a,b) => (a.delay > b.delay) ? -1 : ((b.delay > a.delay) ? 1 : 0));
-
-            const numFramesLeft = MAX_FRAMES - frames.length;
-            for (let i = 0; i < numFramesLeft; i++) {
-
-              let keypointsInterpolated = [];
-              const frameAct = frames[orderedFrames[i].id];
-              const frameAnt = frames[orderedFrames[i].id - 1];
-
-              for (let j = 0; j < HALPE_SIZE; j++) {
-                keypointsInterpolated.push({
-                  x: (frameAct.keypoints[j].x + frameAnt.keypoints[j].x)*0.5,
-                  y: (frameAct.keypoints[j].y + frameAnt.keypoints[j].y)*0.5
-                });
-              }
-
-              const frameInterpolated = 
-                { id: (-1) * frameAct.id, 
-                  keypoints: keypointsInterpolated, timestamp: 0, delay: 0 };
-
-              framesInterpolated.push(frameInterpolated);
-            }
-
-            // Sort "ascendent" (due to -1) by id
-            framesInterpolated.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0));
-
-            for (let i = 0; i < framesInterpolated.length; i++) {
-              // Insert interpolated frames into the frames array in order
-              frames.splice(framesInterpolated[i].id * (-1) + i, 0, framesInterpolated[i]);
-            }
-          }
-
-          // Keep only keypoints to reduce the size of the packet sent to the API
-          frames.forEach((frame) => 
-            { delete frame.id; 
-              delete frame.timestamp; delete frame.delay; });
-
-          fetch('http://127.0.0.1:5000/model', {
-            method: 'POST',
-            headers: {
-                'Content-type' : 'application/json'
-            },
-            body: JSON.stringify({
-              frames: frames, //frames[0]
-              timestamp: new Date().toLocaleString()
-            })
-          })
-          .then((res) => res.json())
-          .then((data) => console.log(data));
-
-          id = 0;
-          frames = []; //Clear array to take the next video
-        }
-      //, 5000)
-    , 5000);
+    captureFrames(5000);
 }, false);
 
-const buttonStart = document.getElementById('btn-start-webcam');
 buttonStart.addEventListener('click', function() { 
-  document.getElementById('overlay').remove();
+  buttonStart.disabled = true;
+  overlaySpin.remove();
   countdown(document.getElementById('downcounter'), function() {
-    camera.start(canvas);
+      camera.start(canvas);
   });
 }, false);
 
-const buttonStops = document.getElementById('btn-stops-webcam');
-buttonStops.addEventListener('click', function() { 
-  camera.stops();
-}, false);
+function captureFrames(miliseconds) {
+  document.querySelector('video').hidden = false;
+  setTimeout(function() {
+    if (frames.length < MIN_FRAMES) {
+      new bootstrap.Toast(toastFramesNotification).show();
+      buttonStart.disabled = false;
+      cancelAnimationFrame(rafId);
+      canvas.clear();
+      camera.stops();
+      id = 0;
+      frames = []; //Clear array to take the next video
+      document.querySelector('video').hidden = true;
+      return;
+    }
 
-const ctx = document.querySelector('canvas').getContext('2d');
+    if (frames.length < MAX_FRAMES) {
+      interpolateFrames();
+    }
+
+    // Keep only keypoints to reduce the size of the packet sent to the API
+    frames.forEach((frame) => 
+      { delete frame.id; 
+        delete frame.timestamp; delete frame.delay; });
+
+    sendKeypointsToAPI();
+
+    buttonStart.disabled = false;
+    cancelAnimationFrame(rafId);
+    canvas.clear();
+    camera.stops();
+    id = 0;
+    frames = []; //Clear array to take the next video
+    document.querySelector('video').hidden = true;
+  }, miliseconds);
+}
+
+function sendKeypointsToAPI() {
+  fetch('http://127.0.0.1:5000/model', {
+    method: 'POST',
+    headers: {
+        'Content-type' : 'application/json'
+    },
+    body: JSON.stringify({
+      frames: frames, //frames[0]
+      timestamp: new Date().toLocaleString()
+    })
+  })
+  .then((res) => res.json())
+  .then((data) => console.log(data));
+}
 
 async function runInference(canvas, camera) {
   canvas.clear();
@@ -187,69 +155,29 @@ async function runInference(canvas, camera) {
   const promiseHands = rec.estimateHands(detectorHands, image, {flipHorizontal: false});
   const promiseFaces = rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
 
-  //canvas.drawCameraFrame(camera);
-
   Promise.all([promisePoses, promiseHands, promiseFaces])
   .then((responses) => {
     const [poses, hands, faces] = responses;
 
     //Poses
     if (poses[0] != null) 
-    {
-      delete poses[0].keypoints3D;
       poses[0].keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
-    }
     else 
-    {
-      poses[0] = {
-        keypoints: new Array(33).fill({x: 0.0, y: 0.0})
-      }
-    }
+      poses[0] = { keypoints: new Array(33).fill({x: 0.0, y: 0.0}) };
     //Hands
     if (hands[0] != null) //Right
-    {
-      delete hands[0].keypoints3D;
-      delete hands[0].score;
       hands[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
-    }
     else
-    {
-      hands[0] = {
-        handedness: "Right",
-        keypoints: new Array(21).fill({x: 0.0, y: 0.0})
-      }
-    }
+      hands[0] = { keypoints: new Array(21).fill({x: 0.0, y: 0.0}) };
     if (hands[1] != null) //Left
-    {
-      delete hands[1].keypoints3D;
-      delete hands[1].score;
       hands[1].keypoints.forEach((key) => { delete key.z; delete key.name; });
-    }
     else
-    {
-      hands[1] = {
-        handedness: "Left",
-        keypoints: new Array(21).fill({x: 0.0, y: 0.0})
-      }
-    }
+      hands[1] = { keypoints: new Array(21).fill({x: 0.0, y: 0.0}) };
     //Faces
     if (faces[0] != null) 
-    {
-      delete faces[0].box;
       faces[0].keypoints.forEach((key) => { delete key.z; delete key.name; });
-    }
     else
-    {
-      faces[0] = {
-        keypoints: new Array(468).fill({x: 0.0, y: 0.0})
-      }
-    }
-
-    /*frames.push({
-      posesKeypoints: poses, 
-      handsKeypoints: hands,
-      facesKeypoints: faces,
-    });*/
+      faces[0] = { keypoints: new Array(468).fill({x: 0.0, y: 0.0}) };
 
     //Neck Keypoint Calc
     const neck_x = (poses[0].keypoints[0].x + poses[0].keypoints[12].x + poses[0].keypoints[11].x) / 3;
@@ -281,13 +209,13 @@ async function runInference(canvas, camera) {
         poses[0].keypoints[26], //Rknee
         poses[0].keypoints[27], //LAnkle
         poses[0].keypoints[28], //RAnkle
-        faces[0].keypoints[10],//{x: 0.0, y: 0.0}, //Head (NOT EXIST)
-        {x: neck_x, y: neck_y},//{x: 0.0, y: 0.0}, //Neck (NOT EXIST)
-        {x: hip_x, y: hip_y},//{x: 0.0, y: 0.0}, //Hip  (NOT EXIST)
+        faces[0].keypoints[10], //Head (NOT EXIST)
+        {x: neck_x, y: neck_y}, //Neck (NOT EXIST)
+        {x: hip_x, y: hip_y}, //Hip  (NOT EXIST)
         poses[0].keypoints[31], //LBigToe
         poses[0].keypoints[32], //RBigToe
-        poses[0].keypoints[31],//{x: 0.0, y: 0.0}, //LSmallToe (NOT EXIST)
-        poses[0].keypoints[32],//{x: 0.0, y: 0.0}, //RSmallToe (NOT EXIST)
+        poses[0].keypoints[31], //LSmallToe (NOT EXIST)
+        poses[0].keypoints[32], //RSmallToe (NOT EXIST)
         poses[0].keypoints[29], //LHeel
         poses[0].keypoints[30], //RHeel
         //face
@@ -373,23 +301,16 @@ async function runInference(canvas, camera) {
       ],
       timestamp: Date.now()
     });
-    //Add delay property as the difference between two frames
+    // Add 'delay' property as the difference between two frames
     frames[frames.length-1]['delay'] 
       = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
 
-    /*canvas.drawResultsPoses(poses);
-    canvas.drawResultsHands(hands);
-    canvas.drawResultsFaces(faces);*/
-
-    frames[frames.length-1].keypoints.forEach((keypoint) => {
-      ctx.fillStyle = 'orange';
-      ctx.fillRect(keypoint.x, keypoint.y, 5, 5);
-    });
+    canvas.drawKeypoints(frames[frames.length-1].keypoints);
   });
 
   updateFPS();
 
-  requestAnimationFrame(() => runInference(canvas, camera));
+  rafId = requestAnimationFrame(() => runInference(canvas, camera));
 }
 
 function countdown( parent, callback ){
@@ -439,4 +360,41 @@ function countdown( parent, callback ){
   // Initiate an interval, but store it in a variable so we can remove it later.
   var interval = setInterval( count, 1000 );
 
+}
+
+function interpolateFrames() {
+  let framesInterpolated = [];
+
+  // Sort descendent by delay between frames
+  let orderedFrames = frames.slice(0); //Copy Array
+  orderedFrames.sort((a,b) => (a.delay > b.delay) ? -1 : ((b.delay > a.delay) ? 1 : 0));
+
+  const numFramesLeft = MAX_FRAMES - frames.length;
+  for (let i = 0; i < numFramesLeft; i++) {
+
+    let keypointsInterpolated = [];
+    const frameAct = frames[orderedFrames[i].id];
+    const frameAnt = frames[orderedFrames[i].id - 1];
+
+    for (let j = 0; j < HALPE_SIZE; j++) {
+      keypointsInterpolated.push({
+        x: (frameAct.keypoints[j].x + frameAnt.keypoints[j].x)*0.5,
+        y: (frameAct.keypoints[j].y + frameAnt.keypoints[j].y)*0.5
+      });
+    }
+
+    const frameInterpolated = 
+      { id: (-1) * frameAct.id, 
+        keypoints: keypointsInterpolated, timestamp: 0, delay: 0 };
+
+    framesInterpolated.push(frameInterpolated);
+  }
+
+  // Sort "ascendent" (due to -1) by id
+  framesInterpolated.sort((a,b) => (a.id > b.id) ? -1 : ((b.id > a.id) ? 1 : 0));
+
+  for (let i = 0; i < framesInterpolated.length; i++) {
+    // Insert interpolated frames into the frames array in order
+    frames.splice(framesInterpolated[i].id * (-1) + i, 0, framesInterpolated[i]);
+  }
 }

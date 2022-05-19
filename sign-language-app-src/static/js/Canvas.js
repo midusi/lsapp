@@ -1,5 +1,3 @@
-//import { drawResultsPoses, drawResultsHands, drawResultsFaces } from "./utilities.js";
-
 export class Canvas {
   constructor() {
     this.canvas = document.querySelector('canvas');
@@ -15,19 +13,10 @@ export class Canvas {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  /*drawResultsPoses(poses) {
-    drawResultsPoses(this.ctx, poses);
+  drawKeypoints(keypoints) {
+    this.ctx.fillStyle = 'orange';
+    keypoints.forEach((keypoint) => {
+      this.ctx.fillRect(keypoint.x, keypoint.y, 5, 5);
+    });
   }
-
-  drawResultsHands(hands) {
-    drawResultsHands(this.ctx, hands);
-  }
-
-  drawResultsFaces(faces) {
-    drawResultsFaces(this.ctx, faces, false, true);
-  }*/
-
-  /*drawCameraFrame(camera) {
-    this.ctx.drawImage(camera.getVideo(), 0,0, this.canvas.width, this.canvas.height);
-  }*/
 }
