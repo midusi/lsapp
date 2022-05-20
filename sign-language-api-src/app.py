@@ -3,16 +3,16 @@ from flask_cors import CORS, cross_origin
 from typing import List, Dict, Any
 from type_hints import KeypointData
 from data.transforms import (
-  get_frames_reduction_transform, 
+  get_frames_reduction_transform,
   get_keypoint_format_transform,
-  keypoint_norm_to_center_transform, 
+  keypoint_norm_to_center_transform
 )
 from itertools import repeat, chain
 
 def keypoints_flatten_transform(keypoints: List[Dict[str, float]]) -> List[float]:
   return [values for keypoint in keypoints for _,values in keypoint.items()]
 
-def add_score_to_keypoints(keypoints: List[float], n : int = 2) -> List[float]:
+def add_score_to_keypoints(keypoints: List[float], n: int = 2) -> List[float]:
   return list(chain.from_iterable(zip(*(keypoints[s::n] for s in range(n)), repeat(0.0))))
 
 def frame_format_transform(frame: Dict[str, List[dict]]) -> KeypointData:
