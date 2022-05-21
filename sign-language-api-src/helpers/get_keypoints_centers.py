@@ -23,12 +23,4 @@ def interpolate(keypoints: List[tuple[float, float, float]], threshold: float, m
     return None
 
 def get_keypoints_centers(keypoints: List[KeypointData], threshold = 0.5, max_missing_percent = 0.05) -> List[Tuple[float, float]]:
-    nose = [(each['keypoints'][0], each['keypoints'][1], each['keypoints'][2]) for each in keypoints]
-    centers = interpolate(nose, threshold, max_missing_percent)
-    if centers is None:
-        neck = [(each['keypoints'][18*3], each['keypoints'][18*3+1], each['keypoints'][18*3+2]) for each in keypoints]
-        centers = interpolate(neck, threshold, max_missing_percent)
-    if centers is None:
-        boxes = [format_box(each['box']) for each in keypoints]
-        centers = [(box['x1']+box['width']/2, box['y1']+box['height']/2) for box in boxes]
-    return centers
+    return [(each['keypoints'][0], each['keypoints'][1]) for each in keypoints]

@@ -1,4 +1,6 @@
-torch
-mypy
 flask
 flask-cors
+pathlib
+torch
+torchtext
+torchvision

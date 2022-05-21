@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from typing import List, Dict, Any
 from type_hints import KeypointData
+from pathlib import Path
+import torch
+from model.KeypointModel import KeypointModel
 from data.transforms import (
   get_frames_reduction_transform,
   get_keypoint_format_transform,
   keypoint_norm_to_center_transform
 )
+from translate import translate
 from itertools import repeat, chain
 
 def keypoints_flatten_transform(keypoints: List[Dict[str, float]]) -> List[float]:
@@ -22,6 +26,10 @@ def frame_format_transform(frame: Dict[str, List[dict]]) -> KeypointData:
 
 max_frames = 75
 keypoints_to_use = [i for i in range(94, 136)]
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+CHECKPOINT_PATH = Path("checkpoints/")
+max_tgt_len = 26
+map_location_device = torch.device(DEVICE)
 
 # Init app
 app = Flask(__name__)
@@ -34,13 +42,22 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def post_data():
   '''Struct of keypoint: request.json['frames'][0]['keypoints'][0]['x']'''
   frames = list(map(frame_format_transform, request.json['frames']))
-  # for frame in frames:
-  #   for k,v in frame.items():
-  #     print(k,v)
   frames = get_frames_reduction_transform(max_frames)(frames)
   frames = keypoint_norm_to_center_transform(frames)
   src = list(map(get_keypoint_format_transform(keypoints_to_use), frames))
-  print(src)
+  print(src[0], src[0].shape, type(src)) #torch.Size([3, 42]) <class 'list'>
+
+  vocab = torch.load(CHECKPOINT_PATH / "vocab.pth", map_location=map_location_device)
+  print(type(vocab)) #torchtext.vocab.vocab.Vocab
+
+  model = KeypointModel(max_frames, max_tgt_len + 2, len(keypoints_to_use), len(vocab)).to(DEVICE)
+
+  checkpoint = torch.load(CHECKPOINT_PATH / "checkpoint_22_epochs.tar", map_location=map_location_device)
+  model.load_state_dict(checkpoint['model_state_dict'])
+
+  res = translate(model, src, max_tgt_len, 2, 3, vocab, DEVICE)
+
+  print(res)
   return request.json
 
 @app.route('/', methods=['GET'])

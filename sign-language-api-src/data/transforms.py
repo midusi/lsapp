@@ -49,6 +49,8 @@ def keypoint_norm_to_center_transform(keypoints: List[KeypointData]) -> List[Key
     for i_frame, keypoint_data in enumerate(keypoints):
         keypoint_norm = keypoint_data
         keypoint_norm['keypoints'] = [
+            # 0 if keypoint not available
+            0 if keypoint == 0 else
             keypoint - centers[i_frame][0] if (i_key%3)==0 else
             keypoint - centers[i_frame][1] if (i_key%3)==1 else
             keypoint
