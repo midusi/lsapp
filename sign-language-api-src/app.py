@@ -31,6 +31,15 @@ CHECKPOINT_PATH = Path("checkpoints/")
 max_tgt_len = 26
 map_location_device = torch.device(DEVICE)
 
+vocab = torch.load(CHECKPOINT_PATH / "vocab.pth", map_location=map_location_device)
+print(vocab.get_itos()[2], vocab.get_itos()[3])
+
+model = KeypointModel(max_frames, max_tgt_len + 2, len(keypoints_to_use), len(vocab)).to(DEVICE)
+
+checkpoint = torch.load(CHECKPOINT_PATH / "checkpoint_22_epochs.tar", map_location=map_location_device)
+model.load_state_dict(checkpoint['model_state_dict'])
+print("train_loss:", checkpoint['train_loss'], "val_loss:", checkpoint['val_loss'])
+
 # Init app
 app = Flask(__name__)
 cors = CORS(app)
@@ -45,20 +54,7 @@ def post_data():
   frames = get_frames_reduction_transform(max_frames)(frames)
   frames = keypoint_norm_to_center_transform(frames)
   src = list(map(get_keypoint_format_transform(keypoints_to_use), frames))
-  print(src[0], src[0].shape, type(src)) #torch.Size([3, 42]) <class 'list'>
-
-  vocab = torch.load(CHECKPOINT_PATH / "vocab.pth", map_location=map_location_device)
-  print(type(vocab)) #torchtext.vocab.vocab.Vocab
-
-  model = KeypointModel(max_frames, max_tgt_len + 2, len(keypoints_to_use), len(vocab)).to(DEVICE)
-
-  checkpoint = torch.load(CHECKPOINT_PATH / "checkpoint_22_epochs.tar", map_location=map_location_device)
-  model.load_state_dict(checkpoint['model_state_dict'])
-
-  res = translate(model, src, max_tgt_len, 2, 3, vocab, DEVICE)
-
-  print(res)
-  return request.json
+  return { "response:": translate(model, src, max_tgt_len, 2, 3, vocab, DEVICE) }
 
 @app.route('/', methods=['GET'])
 @cross_origin()
