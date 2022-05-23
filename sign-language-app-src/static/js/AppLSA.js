@@ -21,6 +21,7 @@ const startButtonElement = document.getElementById('btn-start-webcam');
 const spinOverlayElement = document.getElementById('overlay');
 const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
+const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
 
 // Load networks at the start
@@ -51,7 +52,8 @@ faceLandmarksDetection.createDetector(faceLandmarksDetection.SupportedModels.Med
 
 // Create WebGL context at the start
 await (async function() {
-const image = document.createElement('canvas').getContext('2d').getImageData(0,0,1,1);
+const image = new Image(1, 1);
+image.src = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 await (rec.estimatePoses(detectorPoses, image, {}))
 .then(async () => {
   progressBarElement.style.width = '50%';
@@ -85,7 +87,7 @@ startButtonElement.addEventListener('click', function() {
   spinOverlayElement.classList.add('d-none');
   startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
-      camera.start(canvas);
+      camera.start(canvas, startButtonElement, toastCameraElement, spinOverlayElement);
   });
 }, false);
 

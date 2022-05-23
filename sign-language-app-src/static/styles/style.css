@@ -18,7 +18,7 @@ html {
 }
 
 #canvas-wrap { position: relative } /* Make this a positioned parent */
-#overlay     { position: absolute; top: calc(50% - 20px); left: calc(50% - 20px); }
+#overlay     { position: absolute; top: calc(50% - 30px); left: calc(50% - 118px); }
 
 #downcounter { position: absolute; top: calc(50% - 68px); left: calc(50% - 24px); }
 

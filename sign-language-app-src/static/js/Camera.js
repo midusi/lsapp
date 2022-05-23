@@ -8,7 +8,7 @@ export class Camera {
     return this.video;
   }
 
-  start(canvas) {
+  start(canvas, startButtonElement, toastCameraElement, spinOverlayElement) {
     var self = this;
     if (navigator.getUserMedia) {
       navigator.getUserMedia(
@@ -30,6 +30,9 @@ export class Camera {
         },
         // errorCallback
         function(err) {
+          new bootstrap.Toast(toastCameraElement).show();
+          startButtonElement.disabled = false;
+          spinOverlayElement.classList.remove('d-none');
           console.log("The following error occured: " + err);
         });
     } else {
