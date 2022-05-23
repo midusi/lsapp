@@ -54,7 +54,7 @@ def post_data():
   frames = get_frames_reduction_transform(max_frames)(frames)
   frames = keypoint_norm_to_center_transform(frames)
   src = list(map(get_keypoint_format_transform(keypoints_to_use), frames))
-  return { "response:": translate(model, src, max_tgt_len, 2, 3, vocab, DEVICE) }
+  return { "response": translate(model, src, max_tgt_len, 2, 3, vocab, DEVICE) }
 
 @app.route('/', methods=['GET'])
 @cross_origin()

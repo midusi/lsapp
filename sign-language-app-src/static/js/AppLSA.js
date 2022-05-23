@@ -23,6 +23,7 @@ const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
+const offCanvasBtElement = document.getElementById('offcanvasBottom');
 
 // Load networks at the start
 var detectorPoses, detectorHands, detectorFaces;
@@ -183,7 +184,10 @@ function sendKeypointsToAPI() {
     })
   })
   .then((res) => res.json())
-  .then((data) => console.log(data));
+  .then((data) => {
+    offCanvasBtElement.children[1].innerHTML = `<h3>${data.response}</h3>`;
+    new bootstrap.Offcanvas(offCanvasBtElement).show();
+  });
 }
 
 async function runInference(canvas, camera) {
