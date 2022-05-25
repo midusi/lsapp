@@ -25,9 +25,13 @@ const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
 const offCanvasBtElement = document.getElementById('offcanvasBottom');
 
+const modalModelsLoad = new bootstrap.Modal(
+  document.getElementById('modal-net-load'), {keyboard: false});
+
 // Load networks at the start
 var detectorPoses, detectorHands, detectorFaces;
 await (async function() {
+modalModelsLoad.show();
 detectorPoses = await
 poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, {
   runtime: 'mediapipe',
@@ -58,23 +62,23 @@ image.src = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 await (rec.estimatePoses(detectorPoses, image, {}))
 .then(async () => {
   progressBarElement.style.width = '50%';
-  progressBarElement.textContent = 'Cargando Modelos: 50%';
+  progressBarElement.textContent = '50%';
   await sleep(1000);
 });
 await (rec.estimateHands(detectorHands, image, {}))
 .then(async () => {
   progressBarElement.style.width = '75%';
-  progressBarElement.textContent = 'Cargando Modelos: 75%';
+  progressBarElement.textContent = '75%';
   await sleep(1000);
 });
 await (rec.estimateFaces(detectorFaces, image, {}))
 .then(async () => {
   progressBarElement.style.width = '100%';
-  progressBarElement.textContent = 'Cargando Modelos: 100%';
+  progressBarElement.textContent = '100%';
   await sleep(1000);
 });
-await sleep(2000);
-progressBarElement.parentNode.remove();
+modalModelsLoad.hide();
+await sleep(500);
 startButtonElement.disabled = false;
 new bootstrap.Toast(toastModelsElement).show();
 })();
