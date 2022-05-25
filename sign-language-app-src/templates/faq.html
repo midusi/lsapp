@@ -27,9 +27,6 @@
           <li class="nav-item">
             <a href="learn.html" class="nav-link">Aprende</a>
           </li>
-          <li class="nav-item">
-            <a href="how-it-works.html" class="nav-link">Cómo funciona</a>
-          </li>
         </ul>
       </div>
     </div>
@@ -49,7 +46,9 @@
             </button>
           </h2>
           <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">No, una particularidad de la lengua de señas es que cada región a nivel mundial tiene su propio léxico y grupo de señas que lo representan.</div>
+            <div class="accordion-body">
+              No, una particularidad de la lengua de señas es que cada región a nivel mundial tiene su propio léxico y grupo de señas que lo representan.
+            </div>
           </div>
         </div>
         <div class="accordion-item">
@@ -59,19 +58,76 @@
             </button>
           </h2>
           <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">¡Nadie! Ni siquiera nosotros, los videos al ser seleccionados se procesan en tu mismo navegador, sin siquiera la necesidad de que sean guardados temporalmente en un servidor externo.</div>
+            <div class="accordion-body">
+              ¡Nadie! Ni siquiera nosotros, los videos al ser grabados se procesan en tu mismo navegador, sin siquiera la necesidad de que sean guardados temporalmente en un servidor externo.
+            </div>
           </div>
         </div>
-        <!-- <div class="accordion-item">
+        <div class="accordion-item">
           <h2 class="accordion-header" id="flush-headingThree">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-              Lorem ipsum dolor sit amet.
+              ¿Cómo funciona?
             </button>
           </h2>
           <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae dolor tempore reiciendis iure cumque beatae, nulla asperiores est suscipit quis inventore delectus, laborum quibusdam necessitatibus quisquam fugiat, voluptate hic eius velit? Fuga, officia commodi nisi esse recusandae non distinctio aspernatur qui rem! Temporibus quidem amet dolorum consequatur esse quasi inventore?</div>
+            <div class="accordion-body">
+              <h1>Sistema de Reconocimiento de Lengua de Señas <span class="text-primary">Argentina</span> basado en Inteligencia Artificial</h1>
+
+              <hr>
+              <p class="lead">
+                Autores: John Doe et.al, Instituto de Investigacion en Informática - LIDI (Universidad Nacional de La Plata, 2022)</p>
+              <hr>
+
+              <p>
+                El Reconocimiento Automático de Gestos permite a una computadora comprender los movimientos y poses de una persona, capturadas tradicionalmente mediante cámaras de video y utilizando modelos de Visión por Computadora. El Reconocimiento de Lengua de Señas (LS) es un caso particular de este campo, cuyo objetivo final es traducir mensajes en dicha lengua al castellano u otra lengua tradicional. Un sistema de reconocimiento de Lengua de Señas (RLS) facilitaría la integración de la comunidad sorda mediante la traducción automática, pero también mediante el desarrollo de sistemas automatizados de enseñanza de LS, dada la falta de intérpretes y docentes de LS [Bra19].
+              </p>
+
+              <p>
+                En particular, en los últimos tiempos Las Redes Neuronales Convolucionales (CNNs) han mostrado excelentes resultados en problemas de Visión por Computadora, y son el modelo más utilizado en problemas de clasificación de imágenes [Qui21]. Con los últimos avances de hardware, posibilitan así el desarrollo de aplicaciones de uso regular con características avanzadas.
+              </p>
+
+              <p>
+                El objetivo general de este plan de trabajo es el desarrollo de una aplicación prototipo para el reconocimiento de lengua de señas argentina, utilizando modelos de inteligencia artificial basados en redes neuronales previamente desarrollados por el grupo de investigación.
+              </p>
+
+              <p>
+                El Reconocimiento Automático de Señas, un subárea del Reconocimiento de Gestos, es un problema multidisciplinar sumamente complejo que hoy en día sigue sin ser resuelto en forma total. Si bien en el último tiempo han habido avances en el reconocimiento de gestos, impulsados principalmente por el desarrollo de nuevas tecnologías, aún queda un largo camino por recorrer para construir aplicaciones precisas y robustas que permitan la traducción e interpretación de los gestos realizados por un intérprete.
+              </p>
+
+              <p>
+                La compleja naturaleza de los gestos motivan esfuerzos de diversas áreas de investigación como interacción hombre-máquina, visión por computador, análisis de movimientos, aprendizaje automático y reconocimiento de patrones [Bra19]. La difusión y enseñanza de la lengua de señas, y particularmente la Lengua de Señas Argentino (LSA), es una temática muy impulsada actualmente por gobiernos y universidades para incluir a personas de la comunidad sorda en diferentes entornos [Ron16b].
+              </p>
+
+              <p>
+                Una particularidad de la lengua de señas es que cada región a nivel mundial tiene su propio léxico y grupo de señas que lo representan. Esto lo hace un problema diverso, y diferente de abordar en cada región, ya que la diversidad en la ejecución de las señas o su combinación implica que cada lengua de señas requiere su propia base de datos. En particular, para la Lengua de Señas Argentino (LSA) prácticamente no existen sistemas y bases de datos para la investigación, excepto las bases de datos LSA16, de formas de mano, y LSA64 de gestos dinámicos, ambas desarrolladas por este grupo de investigación en el III-LIDI.
+              </p>
+
+              <p>
+                La tarea completa de reconocer un gesto de lengua de señas involucra diferentes pasos: la ubicación de las manos del intérprete, el reconocimiento de las formas de las manos (configuraciones), el seguimiento de las manos para detectar el movimiento realizado, la ubicación y seguimiento de la cara, el reconocimiento de expresiones faciales, la interpretación semántica y finalmente la traducción al lenguaje escrito [Bra19]. Debido a su complejidad, los enfoques para el reconocimiento de gestos y lenguas de seña utilizan en su mayoría técnicas de Visión por Computadora, que combinan Aprendizaje Automático con Procesamiento de Imágenes [Car18][Zhu18][Kol15][Qui21].
+              </p>
+
+              <p>
+                El Aprendizaje Automático es una rama de la Inteligencia Artificial que estudia sistemas capaces de aprender a realizar una tarea a partir de datos de ejemplo. [Car18][Zhu18][Kol15]. En los últimos años el procesamiento de texto, sonido, video y otras señales ha experimentado grandes progresos mediante el uso de una técnica de Aprendizaje Automático denominada Redes Neuronales Profundas o Aprendizaje Profundo (Deep Learning), que extiende los modelos previos de redes neuronales artificiales con arquitecturas y algoritmos de optimización que permiten entrenar redes con millones de parámetros, en base grandes cantidades de datos de entrenamiento [Car18][Zhu18][Kol15].
+              </p>
+
+              <p>
+                Las redes convolucionales profundas (CNNs) son modelos del estado del arte que combinan elementos de las redes neuronales con convoluciones cuyos filtros son aprendidos a partir de los datos. Su aplicación principal es en tareas de Aprendizaje Automático con imágenes y videos  [Cam17][Yan17b][Mas17].
+              </p>
+
+              <p>
+                Existen diversos trabajos en la actualidad que utilizan estos tipos de redes para clasificar lengua de señas y con un buen nivel de desempeño [Kol19][Qui21]. Además, en años recientes, los modelos basados en redes han alcanzado un nivel de desempeño aceptable para el desarrollo de aplicaciones para usuarios finales [Kol19][Qui21]. Por ende, es un momento propicio para el desarrollo de un sistema de reconocimiento de señas que sea realmente usable [Kol21].
+              </p>
+
+              <p>
+                Un sistema de reconocimiento automático de lengua de señas argentina tiene varias aplicaciones posibles. En principio, permitiría a las personas sordas utilizar su lengua natural y traducirla a la lengua escrita para comunicarse con otras personas. En particular, permitiría subtitular automáticamente videos, por ejemplo, que suban o envíen personas sordas por internet a otras personas, de modo que puedan comunicarse de igual forma con personas que sepan lengua de señas y aquellas que no, dado que estas últimas representan la gran mayoría de la  población argentina y del mundo [Bra19].
+              </p>
+
+              <p>
+                Finalmente, dado que la disponibilidad de intérpretes y docentes de lengua de señas es limitada, también permite desarrollar un sistema adjunto que permita una retroalimentación a quién se encuentra en proceso de aprendizaje de la lengua de señas argentina.
+              </p>
+            </div>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </section>
@@ -80,20 +136,28 @@
   <footer class="p-5 bg-dark text-white position-relative mt-auto">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-7 text-center text-xl-start">
+        <div class="col-md-9 text-center text-xl-start">
           <span class="lead">Copyright &copy; 2022 Instituto de Investigacion en Informática - LIDI</span>
-          <img class="img-fluid d-none d-xl-inline" style="height: 25px" src="../static/images/iii-lidi-logo.png" alt="">
+          <img class="img-fluid d-none d-xl-inline m-1" style="height: 50px" src="../static/images/iii-lidi-logo.png" alt="">
+          <img class="img-fluid d-none d-xl-inline m-1" style="height: 50px" src="../static/images/unlp-logo.png" alt="">
         </div>
         <div class="col-md text-center text-xl-end">
-          <a href="tos.html" class="footer-link nav-link" style="display:inline-block;">Términos de Servicio</a>
-          <a href="policy.html" class="footer-link nav-link" style="display:inline-block;">Política de Privacidad</a>
-          <a href="faq.html" class="footer-link nav-link" style="display:inline-block;">FAQ</a>
+          <a href="faq.html" class="footer-link nav-link" style="display:inline-block;">Preguntas Frecuentes</a>
         </div>
       </div>
     </div>
   </footer>
 
   <script src="../static/js/main.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var url = window.location.href;
+      var start = url.substr(url.indexOf("#"));
+      new bootstrap.Collapse(
+        document.querySelector(start), {togle: false}).show();
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
