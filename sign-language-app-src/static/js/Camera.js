@@ -8,7 +8,7 @@ export class Camera {
     return this.video;
   }
 
-  start(canvas, startButtonElement, toastCameraElement, spinOverlayElement) {
+  start(successCallback, errorCallback) {
     var self = this;
     if (navigator.getUserMedia) {
       navigator.getUserMedia(
@@ -22,17 +22,16 @@ export class Camera {
           self.video.srcObject = localMediaStream;
           self.webcamStream = localMediaStream;
 
-          const {width, height} = self.webcamStream.getTracks()[0].getSettings();;
-          canvas.setWidthHeight(width, height);
+          const {width, height} =
+            self.webcamStream.getTracks()[0].getSettings();
+          successCallback(width, height);
 
           self.video.width = width; //self.video.videoWidth;
           self.video.height = height; //self.video.videoWidth;
         },
         // errorCallback
         function(err) {
-          new bootstrap.Toast(toastCameraElement).show();
-          startButtonElement.disabled = false;
-          spinOverlayElement.classList.remove('d-none');
+          errorCallback();
           console.log("The following error occured: " + err);
         });
     } else {
@@ -40,7 +39,7 @@ export class Camera {
     }
   }
 
-  stops() {
+  stop() {
     this.webcamStream.getTracks().forEach(function(track) {
       track.stop();
     });

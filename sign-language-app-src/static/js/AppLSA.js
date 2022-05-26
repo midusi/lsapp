@@ -18,7 +18,7 @@ let id = 0;
 let frames = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
-const spinOverlayElement = document.getElementById('overlay');
+const textOverlayElement = document.getElementById('overlay');
 const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
@@ -26,7 +26,7 @@ const progressBarElement = document.getElementById('progressbar-models');
 const offCanvasBtElement = document.getElementById('offcanvasBottom');
 
 const modalModelsLoad = new bootstrap.Modal(
-  document.getElementById('modal-net-load'), {keyboard: false});
+  document.getElementById('modal-models-load'), {keyboard: false});
 
 // Load networks at the start
 var detectorPoses, detectorHands, detectorFaces;
@@ -89,10 +89,15 @@ camera.getVideo().addEventListener('loadeddata', function() {
 }, false);
 
 startButtonElement.addEventListener('click', function() {
-  spinOverlayElement.classList.add('d-none');
+  textOverlayElement.classList.add('d-none');
   startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
-      camera.start(canvas, startButtonElement, toastCameraElement, spinOverlayElement);
+      camera.start(function(width, height) { //successCallback
+        canvas.setWidthHeight(width, height);
+      }, function() { //errorCallback
+        startButtonElement.disabled = false;
+        new bootstrap.Toast(toastCameraElement).show();
+      });
   });
 }, false);
 
@@ -104,14 +109,14 @@ function captureFrames(milliseconds) {
 
   const clearAll = function() {
     window.cancelAnimationFrame(rafId);
-    camera.stops();
+    camera.stop();
     canvas.clear();
     id = 0;
     frames = []; //Clear Array
     camera.getVideo().hidden = true;
     fpsElement.innerText = '';
     startButtonElement.disabled = false;
-    spinOverlayElement.classList.remove('d-none');
+    textOverlayElement.classList.remove('d-none');
   }
 
   runInference(canvas, camera);
