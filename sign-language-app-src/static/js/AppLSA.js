@@ -2,7 +2,7 @@ import { updateFPS, fpsElement } from "./fpsModule.js";
 import { Camera } from './Camera.js';
 import { Canvas } from './Canvas.js';
 import * as rec from './Recognition.js';
-import { startTimer } from "./timerModule.js";
+import { startTimer, timerElement } from "./timerModule.js";
 
 const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
@@ -18,12 +18,12 @@ let id = 0;
 let frames = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
-const textOverlayElement = document.getElementById('overlay');
+const textOverlayElement = document.getElementById('text-overlay');
 const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
-const offCanvasBtElement = document.getElementById('offcanvasBottom');
+const offCanvasBtElement = document.getElementById('offcanvas-bottom');
 
 const modalModelsLoad = new bootstrap.Modal(
   document.getElementById('modal-models-load'), {keyboard: false});
@@ -105,6 +105,8 @@ startButtonElement.addEventListener('click', function() {
 function captureFrames(milliseconds) {
   camera.getVideo().hidden = false;
 
+  timerElement.parentNode.classList.remove('d-none');
+
   startTimer(milliseconds);
 
   const clearAll = function() {
@@ -117,6 +119,7 @@ function captureFrames(milliseconds) {
     fpsElement.innerText = '';
     startButtonElement.disabled = false;
     textOverlayElement.classList.remove('d-none');
+    timerElement.parentNode.classList.add('d-none');
   }
 
   runInference(canvas, camera);
@@ -355,6 +358,8 @@ async function runInference(canvas, camera) {
 
 function countdown( parent, callback ){
 
+  const CUSTOM_TEXT = '¡Señá!';
+
   // This is the function we will call every 1000 ms using setInterval
 
   function count(){
@@ -373,6 +378,7 @@ function countdown( parent, callback ){
       // Also, return since we dont want this function to run anymore.
       clearInterval( interval );
       callback();
+      parent.style.left = '';
       return;
 
     }
@@ -389,10 +395,14 @@ function countdown( parent, callback ){
 
     parent.appendChild( paragraph );
 
+    if (text == CUSTOM_TEXT) {
+      parent.style.left = 'calc(50% - 112px)';
+    }
+
   }
 
   // These are all the text we want to display
-  var texts = ['3', '2', '1'];
+  var texts = ['3', '2', '1', CUSTOM_TEXT];
 
   // This will store the paragraph we are currently displaying
   var paragraph = null;

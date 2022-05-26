@@ -6,7 +6,7 @@ var count = 30000;
 var delay = 20; //20 ms. This will be only indicative. There's no guarantee the browswer will call the function after exactly this time
 
 var initTick = 0;
-var timerElement = document.getElementById("timer");
+export var timerElement = document.getElementById("timer");
 function tick() {
  var remaining = (count - (now() - initTick)) / 1000;
 //  console.log(remaining);

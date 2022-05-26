@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
 body {
   /*color: #f7fff6;*/
   /*padding-top: 25px;*/
@@ -17,10 +19,13 @@ html {
   scroll-padding-top: 70px; /* height of sticky header */
 }
 
-#canvas-wrap { position: relative } /* Make this a positioned parent */
-#overlay     { position: absolute; top: calc(50% - 15px); left: calc(50% - 120px); }
+#timer-overlay { position: absolute; top: calc(50% - -180px); left: calc(50% - 80px);
+  width: 150px; font-family: 'Roboto Mono', monospace; z-index: 20; }
 
-#downcounter { position: absolute; top: calc(50% - 68px); left: calc(50% -  24px); }
+#canvas-wrap   { position: relative } /* Make this a positioned parent */
+#text-overlay  { position: absolute; top: calc(50% - 15px); left: calc(50% - 120px); }
+
+#downcounter   { position: absolute; top: calc(50% - 68px); left: calc(50% -  24px); }
 
 @keyframes count {
   0% { transform: scale(1.5); }
