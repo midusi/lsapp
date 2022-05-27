@@ -25,8 +25,8 @@ const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
-const translationElement = document.getElementById('translation');
 const recordedVidElement = document.getElementById('recorded-video');
+const translationElement = document.getElementById('translation-result');
 
 const modalModelsLoad = new bootstrap.Modal(
   document.getElementById('modal-models-load'), {keyboard: false});
@@ -92,6 +92,7 @@ camera.getVideo().addEventListener('loadeddata', function() {
 }, false);
 
 startButtonElement.addEventListener('click', function() {
+  startButtonElement.scrollIntoView(); //Focus
   textOverlayElement.classList.add('d-none');
   recordedVidElement.hidden = true;
   translationElement.children[0].innerHTML = '<h4>...</h4>';
@@ -100,6 +101,7 @@ startButtonElement.addEventListener('click', function() {
       camera.start(function(width, height) { //successCallback
         canvas.setWidthHeight(width, height);
       }, function() { //errorCallback
+        textOverlayElement.classList.remove('d-none');
         startButtonElement.disabled = false;
         new bootstrap.Toast(toastCameraElement).show();
       });
@@ -227,6 +229,7 @@ function sendKeypointsToAPI() {
     translationElement.children[0].innerHTML = `<h4>${data.response}</h4>`;
   })
   .catch((err) => {
+    console.log(err);
     translationElement.children[0].innerHTML =
       '<h4 class="text-danger">ERROR: Falló la conexión con la REST API.</h4>';
   });
