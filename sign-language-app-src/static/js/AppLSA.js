@@ -16,6 +16,8 @@ const canvas = new Canvas();
 let rafId = null;
 let id = 0;
 let frames = [];
+let media_recorder = null;
+let blobs_recorded = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
 const textOverlayElement = document.getElementById('text-overlay');
@@ -23,7 +25,8 @@ const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
-const offCanvasBtElement = document.getElementById('offcanvas-bottom');
+const translationElement = document.getElementById('translation');
+const recordedVidElement = document.getElementById('recorded-video');
 
 const modalModelsLoad = new bootstrap.Modal(
   document.getElementById('modal-models-load'), {keyboard: false});
@@ -90,6 +93,8 @@ camera.getVideo().addEventListener('loadeddata', function() {
 
 startButtonElement.addEventListener('click', function() {
   textOverlayElement.classList.add('d-none');
+  recordedVidElement.hidden = true;
+  translationElement.children[0].innerHTML = '<h4>...</h4>';
   startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
       camera.start(function(width, height) { //successCallback
@@ -111,6 +116,9 @@ function captureFrames(milliseconds) {
 
   const clearAll = function() {
     window.cancelAnimationFrame(rafId);
+    media_recorder.stop();
+    blobs_recorded = []; //Clear Array
+    recordedVidElement.hidden = false;
     camera.stop();
     canvas.clear();
     id = 0;
@@ -121,6 +129,24 @@ function captureFrames(milliseconds) {
     textOverlayElement.classList.remove('d-none');
     timerElement.parentNode.classList.add('d-none');
   }
+
+  // set MIME type of recording as video/webm
+  media_recorder = new MediaRecorder(camera.webcamStream, { mimeType: 'video/webm' });
+
+  // event : new recorded video blob available
+  media_recorder.addEventListener('dataavailable', function(e) {
+    blobs_recorded.push(e.data);
+  });
+
+  // event : recording stopped & all blobs sent
+  media_recorder.addEventListener('stop', function() {
+    // create local object URL from the recorded video blobs
+    let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+    recordedVidElement.src = video_local;
+  });
+
+  // start recording with each recorded blob having 1 second video
+  media_recorder.start(milliseconds);
 
   runInference(canvas, camera);
 
@@ -185,6 +211,7 @@ function interpolateFrames() {
 }
 
 function sendKeypointsToAPI() {
+  translationElement.children[0].innerHTML = '<h4>Cargando...</h4>';
   fetch('http://127.0.0.1:5000/model', {
     method: 'POST',
     headers: {
@@ -197,8 +224,11 @@ function sendKeypointsToAPI() {
   })
   .then((res) => res.json())
   .then((data) => {
-    offCanvasBtElement.children[1].innerHTML = `<h3>${data.response}</h3>`;
-    new bootstrap.Offcanvas(offCanvasBtElement).show();
+    translationElement.children[0].innerHTML = `<h4>${data.response}</h4>`;
+  })
+  .catch((err) => {
+    translationElement.children[0].innerHTML =
+      '<h4 class="text-danger">ERROR: Falló la conexión con la REST API.</h4>';
   });
 }
 

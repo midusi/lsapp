@@ -43,33 +43,41 @@
 
     <hr>
 
-    <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Iniciar 📹</button>
-    <br>
-    <div class="badge bg-dark text-start mb-2 block" style="width: 72px;">FPS: <span id="fps"></span></div>
-    <div id="canvas-wrap">
-      <div id="canvas-placeholder" class="img-thumbnail"></div>
-      <div id="text-overlay">
-        <div>Presiona en el botón "Iniciar 📹"</div>
-      </div>
-      <div id="downcounter"></div>
-      <video class="video" width="640" height="480" autoplay></video>
-      <canvas class="canvas" width="640" height="480" class="img-thumbnail"></canvas>
-      <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
-          <h3 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h3>
+    <div class="container">
+      <div class="row row-cols-2">
+        <div class="col">
+          <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Iniciar 📹</button>
+          <br>
+          <div class="badge bg-dark text-start mb-2 block" style="width: 72px;">FPS: <span id="fps"></span></div>
+        </div>
+        <div class="col">
+          <h2>Traducción</h2>
+        </div>
+        <div class="col">
+          <div id="canvas-wrap">
+            <div id="canvas-placeholder" class="img-thumbnail"></div>
+            <div id="text-overlay">
+              <div>Presiona en el botón "Iniciar 📹"</div>
+            </div>
+            <div id="downcounter"></div>
+            <video class="video" width="640" height="480" autoplay></video>
+            <video id="recorded-video" class="video" src="" width="640" height="480" autoplay loop></video>
+            <canvas class="canvas" width="640" height="480" class="img-thumbnail"></canvas>
+            <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
+                <h3 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h3>
+            </div>
+          </div>
+        </div>
+        <div id="translation" class="col d-flex align-items-center">
+          <div class="container text-center">
+            <h4>...</h4>
+          </div>
+        </div>
       </div>
     </div>
-    <hr>
   </div>
 
-  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvas-bottom" aria-labelledby="offcanvas-bottom-label">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvas-bottom-label">Traducción:</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body text-center">
-      ...
-    </div>
-  </div>
+  <hr>
 
   <!-- Push Notifications with Toasts -->
   <div id="toast-models" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 20px;">
