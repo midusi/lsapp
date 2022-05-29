@@ -44,20 +44,19 @@
     <hr>
 
     <div class="container">
-      <div class="row row-cols-2">
-        <div class="col">
+      <div class="row row-cols-lg-2 row-cols-1">
+        <div class="col order-1">
           <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Iniciar 📹</button>
           <br>
           <div class="badge bg-dark text-start mb-2 block" style="width: 72px;">FPS: <span id="fps"></span></div>
         </div>
-        <div class="col d-flex align-items-center">
+        <div class="col d-flex align-items-center order-lg-2 order-3">
           <div class="container text-center">
             <h2>Traducción</h2>
           </div>
         </div>
-        <div class="col">
+        <div class="col order-lg-3 order-2">
           <div id="canvas-wrap">
-            <div id="canvas-placeholder" class="img-thumbnail"></div>
             <div id="text-overlay">
               <div>Presiona en el botón "Iniciar 📹"</div>
             </div>
@@ -65,12 +64,13 @@
             <video class="video" width="640" height="480" autoplay></video>
             <video id="recorded-video" class="video" src="" width="640" height="480" autoplay loop></video>
             <canvas class="canvas" width="640" height="480" class="img-thumbnail"></canvas>
+            <canvas id="canvas-placeholder" width="640" height="480" class="img-thumbnail"></canvas>
             <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
-                <h3 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h3>
+                <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
             </div>
           </div>
         </div>
-        <div id="translation-result" class="col d-flex align-items-center">
+        <div id="translation-result" class="col d-flex align-items-center order-4">
           <div class="container text-center">
             <h4>...</h4>
           </div>
@@ -119,7 +119,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="modal-models-load" tabindex="-1" aria-labelledby="modal-models-load-label" aria-hidden="true">
+  <div class="modal fade" id="modal-models-load" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-models-load-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header text-center">

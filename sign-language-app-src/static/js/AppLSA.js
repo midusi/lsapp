@@ -132,6 +132,8 @@ function captureFrames(milliseconds) {
     timerElement.parentNode.classList.add('d-none');
   }
 
+  let showRecording = true;
+
   // set MIME type of recording as video/webm
   media_recorder = new MediaRecorder(camera.webcamStream, { mimeType: 'video/webm' });
 
@@ -144,7 +146,7 @@ function captureFrames(milliseconds) {
   media_recorder.addEventListener('stop', function() {
     // create local object URL from the recorded video blobs
     let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-    recordedVidElement.src = video_local;
+    recordedVidElement.src = showRecording ? video_local : "";
   });
 
   // start recording with each recorded blob having 1 second video
@@ -154,8 +156,9 @@ function captureFrames(milliseconds) {
 
   setTimeout(function() {
     if (frames.length < MIN_FRAMES) {
-      new bootstrap.Toast(toastFramesElement).show();
+      showRecording = false;
       clearAll();
+      new bootstrap.Toast(toastFramesElement).show();
       return;
     }
 

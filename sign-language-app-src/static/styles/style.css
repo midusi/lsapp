@@ -1,8 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
+:root {
+  --canvas-scale-x: -0.95;
+  --canvas-scale-y: 0.95;
+  --canvas-top: 0px;
+  --canvas-left: 0px;
+  --timer-overlay-top: 80%;
+}
+
+@media (min-width: 765px) and (max-width: 990px) {
+  :root {
+    --canvas-scale-x: -0.93;
+    --canvas-scale-y: 0.93;
+    --canvas-top: -10px;
+    --canvas-left: -0.5px;
+    --timer-overlay-top: 85%;
+  }
+}
+
 body {
   /*color: #f7fff6;*/
   /*padding-top: 25px;*/
+  overflow: overlay;
   background-color: #f7fff6;
 }
 
@@ -19,7 +38,7 @@ html {
   scroll-padding-top: 70px; /* height of sticky header */
 }
 
-#timer-overlay { position: absolute; top: calc(50% - -180px); left: calc(50% - 80px);
+#timer-overlay { position: absolute; top: var(--timer-overlay-top); left: calc(50% - 80px);
   width: 150px; font-family: 'Roboto Mono', monospace; z-index: 20; }
 
 #canvas-wrap   { position: relative } /* Make this a positioned parent */
@@ -45,35 +64,31 @@ html {
   animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
 }
 
-.video {
-  transform: scaleX(-1);
-  margin: 1%;
-  height: auto;
+.canvas, .video {
+  /*Mirrored*/
+  transform: scale(
+    var(--canvas-scale-x), var(--canvas-scale-y));
+  /*Position*/
   position: absolute;
-  top: 0;
-  left: calc(50% - 325px - 0.5%);
-}
-
-.canvas {
-  transform: scaleX(-1);
-  margin: 1%;
-  position: absolute;
-  top: 0;
-  left: calc(50% - 325px - 0.5%);
+  top: var(--canvas-top);
+  left: var(--canvas-left);
   z-index: 10;
+  /*Responsive*/
+  width: 100%;
+  height: auto;
   /*background-color:rgba(255,0,0,0.5);*/
 }
 
 #canvas-placeholder {
-  width: 660px;
-  height: 500px;
-  margin: 1%;
-
   /*Center Div*/
   margin-left: auto;
   margin-right: auto;
 }
 
 #btn-start-webcam {
-  scroll-margin: 20px;
+  scroll-margin: 20px; /*Offset*/
+}
+
+.modal-open {
+  padding-right: 0 !important;
 }
