@@ -17,7 +17,6 @@ const startButtonElement = document.getElementById('btn-start-webcam');
 const textOverlayElement = document.getElementById('text-overlay');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
-const recordedVidElement = document.getElementById('recorded-video');
 const translationElement = document.getElementById('translation-result');
 
 // Create WebGL context at the start
@@ -34,14 +33,14 @@ await (async function() {
 })();
 
 // Event listeners
-camera.video.addEventListener('loadeddata', function() {
+camera.getVideo().addEventListener('loadeddata', function() {
     captureFrames(5000);
 }, false);
 
 startButtonElement.addEventListener('click', function() {
-  startButtonElement.scrollIntoView(); //Focus
+  canvas.getCanvasElement().scrollIntoView(); //Focus
   textOverlayElement.classList.add('d-none');
-  recordedVidElement.hidden = true;
+  camera.showRecordingElement(false);
   translationElement.children[0].innerHTML = '<h4>...</h4>';
   startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
@@ -57,7 +56,7 @@ startButtonElement.addEventListener('click', function() {
 
 // General purpose functions
 function captureFrames(milliseconds) {
-  camera.video.hidden = false;
+  camera.getVideo().hidden = false;
 
   timerElement.parentNode.classList.remove('d-none');
 
@@ -65,14 +64,13 @@ function captureFrames(milliseconds) {
 
   const clearAll = function() {
     window.cancelAnimationFrame(rafId);
-    camera.media_recorder.stop();
-    camera.blobs_recorded = []; //Clear Array
-    recordedVidElement.hidden = false;
+    camera.stopRecording();
+    showRecording && camera.showRecordingElement(true);
     camera.stop();
     canvas.clear();
     id = 0;
     frames = []; //Clear Array
-    camera.video.hidden = true;
+    camera.getVideo().hidden = true;
     startButtonElement.disabled = false;
     textOverlayElement.classList.remove('d-none');
     timerElement.parentNode.classList.add('d-none');
@@ -80,8 +78,7 @@ function captureFrames(milliseconds) {
 
   let showRecording = true;
 
-  // start recording with each recorded blob having 1 second video
-  camera.media_recorder.start(milliseconds);
+  camera.startRecording();
 
   runInference(canvas, camera);
 
@@ -170,7 +167,7 @@ function sendKeypointsToAPI() {
 }
 
 async function runInference(canvas, camera) {
-  const image = camera.video;
+  const image = camera.getVideo();
 
   canvas.clear();
 

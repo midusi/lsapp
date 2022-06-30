@@ -4,6 +4,10 @@ export class Canvas {
     this.ctx = this.canvas.getContext('2d');
   }
 
+  getCanvasElement() {
+    return this.canvas;
+  }
+
   setWidthHeight(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;

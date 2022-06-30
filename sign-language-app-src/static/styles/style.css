@@ -50,6 +50,7 @@ body {
 }
 
 .canvas, .video {
+  scroll-margin: 60px; /*Offset*/
   /*Mirrored*/
   transform: scale(
     var(--canvas-scale-x), var(--canvas-scale-y));
@@ -99,10 +100,6 @@ body {
   margin: auto;
   text-align: center;
   animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
-}
-
-#btn-start-webcam {
-  scroll-margin: 20px; /*Offset*/
 }
 
 .modal-open {

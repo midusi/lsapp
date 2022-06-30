@@ -1,11 +1,33 @@
-navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
-export var video = document.querySelector('video');
-var webcamStream;
-export var media_recorder;
-export var blobs_recorded;
+var webcamStream, media_recorder, blobs_recorded;
+const video = document.querySelector('video');
+const recordedVideo = document.getElementById('recorded-video');
+
+navigator.getUserMedia = ( 
+  navigator.getUserMedia || 
+  navigator.webkitGetUserMedia || 
+  navigator.mozGetUserMedia || 
+  navigator.msGetUserMedia
+);
+
+function getVideo() {
+  return video;
+}
+
+function showRecordingElement(state) {
+  recordedVideo.hidden = !state;
+}
+
+// start recording with each recorded blob having 1 second video
+function startRecording(milliseconds) {
+  media_recorder.start(milliseconds);
+}
+
+function stopRecording() {
+  media_recorder.stop();
+  blobs_recorded = []; //Clear Array
+}
 
 function start(successCallback, errorCallback) {
-  var self = this;
   if (navigator.getUserMedia) {
     navigator.getUserMedia(
       // constraints
@@ -29,14 +51,14 @@ function start(successCallback, errorCallback) {
 
         // event : new recorded video blob available
         media_recorder.addEventListener('dataavailable', function(e) {
-          this.blobs_recorded.push(e.data);
+          blobs_recorded.push(e.data);
         });
 
         // event : recording stopped & all blobs sent
         media_recorder.addEventListener('stop', function() {
           // create local object URL from the recorded video blobs
           let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-          recordedVidElement.src = showRecording ? video_local : "";
+          recordedVideo.src = video_local;
         });
       },
       // errorCallback
@@ -55,4 +77,4 @@ function stop() {
   });
 }
 
-export { start, stop };
+export { getVideo, showRecordingElement, start, stop, startRecording, stopRecording };
