@@ -18,9 +18,11 @@
   }
 }
 
+html {
+  scroll-padding-top: 70px; /* height of sticky header */
+}
+
 body {
-  /*color: #f7fff6;*/
-  /*padding-top: 25px;*/
   overflow: overlay;
   background-color: #f7fff6;
 }
@@ -34,18 +36,52 @@ body {
   color: rgba(255,255,255,0.75);
 }
 
-html {
-  scroll-padding-top: 70px; /* height of sticky header */
+#timer-overlay { 
+  position: absolute; 
+  z-index: 20;
+  top: var(--timer-overlay-top); 
+  left: calc(50% - 80px);
+  width: 150px; 
+  font-family: 'Roboto Mono', monospace; 
 }
 
-#timer-overlay { position: absolute; top: var(--timer-overlay-top); left: calc(50% - 80px);
-  width: 150px; font-family: 'Roboto Mono', monospace; z-index: 20; }
+#canvas-wrap {
+  position: relative; /* Make this a positioned parent */
+}
 
-#canvas-wrap   { position: relative } /* Make this a positioned parent */
-#text-overlay  { position: absolute; top: calc(50% - 22px); left: calc(50% - 42px); 
-  z-index: 50; }
+.canvas, .video {
+  /*Mirrored*/
+  transform: scale(
+    var(--canvas-scale-x), var(--canvas-scale-y));
+  /*Position*/
+  position: absolute;
+  z-index: 10;
+  top: var(--canvas-top);
+  left: var(--canvas-left);
+  /*Responsive*/
+  width: 100%;
+  height: auto;
+  /*background-color:rgba(255,0,0,0.5);*/
+}
 
-#downcounter   { position: absolute; top: calc(50% - 68px); left: calc(50% - 24px); }
+#canvas-placeholder {
+  /*Center Div*/
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#text-overlay {
+  position: absolute; 
+  z-index: 20;
+  top: calc(50% - 22px); 
+  left: calc(50% - 42px); 
+}
+
+#downcounter {
+  position: absolute;
+  top: calc(50% - 68px);
+  left: calc(50% - 24px);
+}
 
 @keyframes count {
   0% { transform: scale(1.5); }
@@ -63,27 +99,6 @@ html {
   margin: auto;
   text-align: center;
   animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
-}
-
-.canvas, .video {
-  /*Mirrored*/
-  transform: scale(
-    var(--canvas-scale-x), var(--canvas-scale-y));
-  /*Position*/
-  position: absolute;
-  top: var(--canvas-top);
-  left: var(--canvas-left);
-  z-index: 10;
-  /*Responsive*/
-  width: 100%;
-  height: auto;
-  /*background-color:rgba(255,0,0,0.5);*/
-}
-
-#canvas-placeholder {
-  /*Center Div*/
-  margin-left: auto;
-  margin-right: auto;
 }
 
 #btn-start-webcam {

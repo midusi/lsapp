@@ -52,16 +52,16 @@
         </div>
         <div class="col order-lg-3 order-2">
           <div id="canvas-wrap">
-            <div id="downcounter"></div>
             <video class="video" width="640" height="480" autoplay></video>
             <video id="recorded-video" class="video" src="" width="640" height="480" autoplay loop></video>
             <canvas class="canvas" width="640" height="480" class="img-thumbnail"></canvas>
             <canvas id="canvas-placeholder" width="640" height="480" class="img-thumbnail"></canvas>
-            <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
-                <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
-            </div>
+            <div id="downcounter"></div>
             <div id="text-overlay">
               <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Grabar</button>
+            </div>
+            <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
+              <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
             </div>
           </div>
         </div>
