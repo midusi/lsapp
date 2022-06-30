@@ -95,6 +95,7 @@ function captureFrames(milliseconds) {
   setTimeout(function() {
     try {
       if (frames.length < MIN_FRAMES) {
+        startButtonElement.disabled = false;
         showRecording = false;
         new bootstrap.Toast(toastFramesElement).show();
         return;
@@ -113,7 +114,6 @@ function captureFrames(milliseconds) {
       sendKeypointsToAPI();
     } finally {
       clearAll();
-      startButtonElement.disabled = false;
     }
   }, milliseconds);
 }
