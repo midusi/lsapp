@@ -37,29 +37,21 @@
     <p class="lead">
       Utiliza el sistema de reconocimiento automático de lengua de señas argentina enfocándola a la persona que realizará las señas, el sistema capturará sus movimientos y obtendrá los subtítulos en tiempo real 🤙.
     </p>
-    <p>
-      La subtitulación en tiempo real permite que las personas sordas utilicen su lengua natural y sea traducida a la lengua escrita para comunicarse con otras personas, de modo que puedan comunicarse de igual forma con personas que sepan lengua de señas y aquellas que no, dado que estas últimas representan la gran mayoría de la población argentina y del mundo.
-    </p>
 
     <hr>
 
     <div class="container">
       <div class="row row-cols-lg-2 row-cols-1">
         <div class="col order-1">
-          <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Iniciar 📹</button>
-          <br>
-          <div class="badge bg-dark text-start mb-2 block" style="width: 72px;">FPS: <span id="fps"></span></div>
+            <h2>LSA</h2>
         </div>
-        <div class="col d-flex align-items-center order-lg-2 order-3">
-          <div class="container text-center">
-            <h2>Traducción</h2>
+        <div class="col order-lg-2 order-3">
+          <div class="container">
+            <h2>Español</h2>
           </div>
         </div>
         <div class="col order-lg-3 order-2">
           <div id="canvas-wrap">
-            <div id="text-overlay">
-              <div>Presiona en el botón "Iniciar 📹"</div>
-            </div>
             <div id="downcounter"></div>
             <video class="video" width="640" height="480" autoplay></video>
             <video id="recorded-video" class="video" src="" width="640" height="480" autoplay loop></video>
@@ -68,39 +60,34 @@
             <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
                 <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
             </div>
+            <div id="text-overlay">
+              <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Grabar</button>
+            </div>
           </div>
         </div>
         <div id="translation-result" class="col d-flex align-items-center order-4">
-          <div class="container text-center">
+          <div class="container">
             <h4>...</h4>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <hr>
+    <hr>
+  
+    <p>
+      La subtitulación en tiempo real permite que las personas sordas utilicen su lengua natural y sea traducida a la lengua escrita para comunicarse con otras personas, de modo que puedan comunicarse de igual forma con personas que sepan lengua de señas y aquellas que no, dado que estas últimas representan la gran mayoría de la población argentina y del mundo.
+    </p>
+  </div>
 
   <!-- Push Notifications with Toasts -->
-  <div id="toast-models" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 20px;">
-    <div class="d-flex">
-      <div class="h3 ms-3 mt-1 align-self-center">
-        <i class="bi bi-info-circle"></i>
-      </div>
-      <div class="toast-body">
-        ¡Modelos cargados exitosamente!
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-
   <div id="toast-frames" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 20px;">
     <div class="d-flex">
       <div class="h3 ms-3 align-self-center">
         <i class="bi bi-exclamation-triangle"></i>
       </div>
       <div class="toast-body">
-        No se captaron fotogramas suficientes, intenta nuevamente.
+        Tu dispositivo no tiene la potencia de cómputo suficiente para realizar la traducción; recomendamos probar en una computadora.
       </div>
       <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
@@ -123,7 +110,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="modal-models-load-label">Cargando Modelos</h5>
+          <h5 class="modal-title w-100" id="modal-models-load-label">Cargando...<br>(este proceso puede tardar unos minutos)</h5>
         </div>
         <div class="modal-body">
           <div class="progress">

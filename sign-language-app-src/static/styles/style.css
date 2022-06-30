@@ -42,9 +42,10 @@ html {
   width: 150px; font-family: 'Roboto Mono', monospace; z-index: 20; }
 
 #canvas-wrap   { position: relative } /* Make this a positioned parent */
-#text-overlay  { position: absolute; top: calc(50% - 15px); left: calc(50% - 120px); }
+#text-overlay  { position: absolute; top: calc(50% - 22px); left: calc(50% - 42px); 
+  z-index: 50; }
 
-#downcounter   { position: absolute; top: calc(50% - 68px); left: calc(50% -  24px); }
+#downcounter   { position: absolute; top: calc(50% - 68px); left: calc(50% - 24px); }
 
 @keyframes count {
   0% { transform: scale(1.5); }

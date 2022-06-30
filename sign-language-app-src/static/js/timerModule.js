@@ -11,7 +11,7 @@ function tick() {
  var remaining = (count - (now() - initTick)) / 1000;
 //  console.log(remaining);
  remaining = remaining >= 0 ? remaining : 0;
- var secs = remaining.toFixed(2);
+ var secs = remaining.toFixed(0);
  timerElement.innerHTML = secs + " seg";
  if (remaining) setTimeout(tick, delay);
 }

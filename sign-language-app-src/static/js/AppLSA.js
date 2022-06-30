@@ -1,4 +1,3 @@
-import { updateFPS, fpsElement } from "./fpsModule.js";
 import { Camera } from './Camera.js';
 import { Canvas } from './Canvas.js';
 import * as rec from './Recognition.js';
@@ -21,7 +20,6 @@ let blobs_recorded = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
 const textOverlayElement = document.getElementById('text-overlay');
-const toastModelsElement = document.getElementById('toast-models');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const progressBarElement = document.getElementById('progressbar-models');
@@ -83,7 +81,6 @@ await (rec.estimateFaces(detectorFaces, image, {}))
 modalModelsLoad.hide();
 await sleep(500);
 startButtonElement.disabled = false;
-new bootstrap.Toast(toastModelsElement).show();
 })();
 
 // Event listeners
@@ -126,7 +123,6 @@ function captureFrames(milliseconds) {
     id = 0;
     frames = []; //Clear Array
     camera.getVideo().hidden = true;
-    fpsElement.innerText = '';
     startButtonElement.disabled = false;
     textOverlayElement.classList.remove('d-none');
     timerElement.parentNode.classList.add('d-none');
@@ -387,7 +383,6 @@ async function runInference(canvas, camera) {
     canvas.drawKeypoints(frames[frames.length-1].keypoints);
   });
 
-  updateFPS();
 
   rafId = window.requestAnimationFrame(() => runInference(canvas, camera));
 }
