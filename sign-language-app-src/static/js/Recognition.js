@@ -1,4 +1,4 @@
-export var detectorPoses, detectorHands, detectorFaces;
+var detectorPoses, detectorHands, detectorFaces;
 
 async function loadNets() {
   detectorPoses = await poseDetection.createDetector(
@@ -17,7 +17,7 @@ async function loadNets() {
       modelType: 'lite'
     });
 
-  detectorFaces = await 
+  detectorFaces = await
   faceLandmarksDetection.createDetector(
     faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
       runtime: 'mediapipe',

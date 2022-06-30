@@ -1,13 +1,9 @@
-var webcamStream, media_recorder, blobs_recorded;
+navigator.getUserMedia =
+( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
+
+var webcamStream, media_recorder, blobs_recorded, video_local;
 const video = document.querySelector('video');
 const recordedVideo = document.getElementById('recorded-video');
-
-navigator.getUserMedia = ( 
-  navigator.getUserMedia || 
-  navigator.webkitGetUserMedia || 
-  navigator.mozGetUserMedia || 
-  navigator.msGetUserMedia
-);
 
 function getVideo() {
   return video;
@@ -41,25 +37,13 @@ function start(successCallback, errorCallback) {
         webcamStream = localMediaStream;
 
         const {width, height} = webcamStream.getTracks()[0].getSettings();
-        successCallback(width, height);
 
         video.width = width;
         video.height = height;
 
-        // set MIME type of recording as video/webm
-        media_recorder = new MediaRecorder(webcamStream, { mimeType: 'video/webm' });
+        successCallback(width, height);
 
-        // event : new recorded video blob available
-        media_recorder.addEventListener('dataavailable', function(e) {
-          blobs_recorded.push(e.data);
-        });
-
-        // event : recording stopped & all blobs sent
-        media_recorder.addEventListener('stop', function() {
-          // create local object URL from the recorded video blobs
-          let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-          recordedVideo.src = video_local;
-        });
+        setupMediaRecorder();
       },
       // errorCallback
       function(err) {
@@ -74,6 +58,31 @@ function start(successCallback, errorCallback) {
 function stop() {
   webcamStream.getTracks().forEach(function(track) {
     track.stop();
+  });
+  const checkFlag = () => {
+    if (video_local === undefined) {
+      window.setTimeout(checkFlag, 100);
+    } else {
+      recordedVideo.src = video_local;
+      video_local = undefined;
+    }
+  };
+  checkFlag();
+}
+
+function setupMediaRecorder() {
+  // set MIME type of recording as video/webm
+  media_recorder = new MediaRecorder(webcamStream, { mimeType: 'video/webm' });
+
+  // event : new recorded video blob available
+  media_recorder.addEventListener('dataavailable', function(e) {
+    blobs_recorded.push(e.data);
+  });
+
+  // event : recording stopped & all blobs sent
+  media_recorder.addEventListener('stop', function() {
+    // create local object URL from the recorded video blobs
+    video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
   });
 }
 

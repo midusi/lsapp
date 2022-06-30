@@ -58,7 +58,7 @@
             <canvas id="canvas-placeholder" width="640" height="480" class="img-thumbnail"></canvas>
             <div id="downcounter"></div>
             <div id="text-overlay">
-              <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-sm m-1" disabled>Grabar</button>
+              <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-lg m-1" disabled>Grabar</button>
             </div>
             <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
               <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
@@ -74,14 +74,14 @@
     </div>
 
     <hr>
-  
+
     <p>
       La subtitulación en tiempo real permite que las personas sordas utilicen su lengua natural y sea traducida a la lengua escrita para comunicarse con otras personas, de modo que puedan comunicarse de igual forma con personas que sepan lengua de señas y aquellas que no, dado que estas últimas representan la gran mayoría de la población argentina y del mundo.
     </p>
   </div>
 
   <!-- Push Notifications with Toasts -->
-  <div id="toast-frames" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 20px;">
+  <div id="toast-frames" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 10px;">
     <div class="d-flex">
       <div class="h3 ms-3 align-self-center">
         <i class="bi bi-exclamation-triangle"></i>
@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <div id="toast-camera" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 20px;">
+  <div id="toast-camera" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 10px;">
     <div class="d-flex">
       <div class="h3 ms-3 align-self-center">
         <i class="bi bi-x-circle"></i>
@@ -102,6 +102,22 @@
         No se encontró una cámara conectada a tu dispositivo.
       </div>
       <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal-models-load" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-models-load-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5 class="modal-title w-100" id="modal-models-load-label">Cargando...<br>(este proceso puede demorar unos minutos)</h5>
+        </div>
+        <div class="modal-body">
+          <div class="progress">
+            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

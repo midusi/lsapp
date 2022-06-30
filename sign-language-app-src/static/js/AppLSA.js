@@ -1,13 +1,13 @@
 import * as camera from './Camera.js';
-import { Canvas } from './Canvas.js';
+import * as canvas from './Canvas.js';
 import * as rec from './Recognition.js';
+import { hideHTMLElement, showHTMLElement, sleep } from './utilities.js';
+import { countdown } from "./countdownModule.js";
 import { startTimer, timerElement } from "./timerModule.js";
 
 const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
 const HALPE_SIZE = 136; // Total number of keypoints from Halpe dataset
-
-const canvas = new Canvas();
 
 let rafId = null;
 let id = 0;
@@ -19,8 +19,15 @@ const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const translationElement = document.getElementById('translation-result');
 
+const modalModelsLoad = new bootstrap.Modal(
+  document.getElementById('modal-models-load'), {keyboard: false});
+
 // Create WebGL context at the start
 await (async function() {
+  modalModelsLoad.show();
+
+  await sleep(1000);
+
   // Load networks at the start
   await rec.loadNets();
 
@@ -28,6 +35,10 @@ await (async function() {
   image.src = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 
   rec.estimateAll(image, {});
+
+  await sleep(1000);
+
+  modalModelsLoad.hide();
 
   startButtonElement.disabled = false;
 })();
@@ -39,16 +50,16 @@ camera.getVideo().addEventListener('loadeddata', function() {
 
 startButtonElement.addEventListener('click', function() {
   canvas.getCanvasElement().scrollIntoView(); //Focus
-  textOverlayElement.classList.add('d-none');
+  startButtonElement.disabled = true;
+  hideHTMLElement(textOverlayElement);
   camera.showRecordingElement(false);
   translationElement.children[0].innerHTML = '<h4>...</h4>';
-  startButtonElement.disabled = true;
   countdown(document.getElementById('downcounter'), function() {
       camera.start(function(width, height) { //successCallback
         canvas.setWidthHeight(width, height);
       }, function() { //errorCallback
-        textOverlayElement.classList.remove('d-none');
         startButtonElement.disabled = false;
+        showHTMLElement(textOverlayElement);
         new bootstrap.Toast(toastCameraElement).show();
       });
   });
@@ -56,9 +67,9 @@ startButtonElement.addEventListener('click', function() {
 
 // General purpose functions
 function captureFrames(milliseconds) {
-  camera.getVideo().hidden = false;
+  showHTMLElement(camera.getVideo());
 
-  timerElement.parentNode.classList.remove('d-none');
+  showHTMLElement(timerElement.parentNode);
 
   startTimer(milliseconds);
 
@@ -70,10 +81,9 @@ function captureFrames(milliseconds) {
     canvas.clear();
     id = 0;
     frames = []; //Clear Array
-    camera.getVideo().hidden = true;
-    startButtonElement.disabled = false;
-    textOverlayElement.classList.remove('d-none');
-    timerElement.parentNode.classList.add('d-none');
+    showHTMLElement(textOverlayElement);
+    hideHTMLElement(camera.getVideo());
+    hideHTMLElement(timerElement.parentNode);
   }
 
   let showRecording = true;
@@ -83,26 +93,28 @@ function captureFrames(milliseconds) {
   runInference(canvas, camera);
 
   setTimeout(function() {
-    if (frames.length < MIN_FRAMES) {
-      showRecording = false;
+    try {
+      if (frames.length < MIN_FRAMES) {
+        showRecording = false;
+        new bootstrap.Toast(toastFramesElement).show();
+        return;
+      }
+
+      if (frames.length < MAX_FRAMES) {
+        interpolateFrames();
+      }
+
+      // Keep only 'keypoints' to reduce the size of the packet sent to the API
+      frames.forEach((frame) => {
+        delete frame.id; delete frame.timestamp; delete frame.delay;
+        frame.keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
+      });
+
+      sendKeypointsToAPI();
+    } finally {
       clearAll();
-      new bootstrap.Toast(toastFramesElement).show();
-      return;
+      startButtonElement.disabled = false;
     }
-
-    if (frames.length < MAX_FRAMES) {
-      interpolateFrames();
-    }
-
-    // Keep only 'keypoints' to reduce the size of the packet sent to the API
-    frames.forEach((frame) => {
-      delete frame.id; delete frame.timestamp; delete frame.delay;
-      frame.keypoints.forEach((key) => { delete key.z; delete key.name; delete key.score; });
-    });
-
-    sendKeypointsToAPI();
-
-    clearAll();
   }, milliseconds);
 }
 
@@ -163,6 +175,9 @@ function sendKeypointsToAPI() {
     console.log(err);
     translationElement.children[0].innerHTML =
       '<h4 class="text-danger">ERROR: Falló la conexión con la REST API.</h4>';
+  })
+  .finally(() => {
+    startButtonElement.disabled = false;
   });
 }
 
@@ -317,62 +332,5 @@ async function runInference(canvas, camera) {
     canvas.drawKeypoints(frames[frames.length-1].keypoints);
   });
 
-
   rafId = window.requestAnimationFrame(() => runInference(canvas, camera));
-}
-
-function countdown( parent, callback ){
-
-  const CUSTOM_TEXT = '¡Señá!';
-
-  // This is the function we will call every 1000 ms using setInterval
-
-  function count(){
-
-    if( paragraph ){
-
-      // Remove the paragraph if there is one
-      paragraph.remove();
-
-    }
-
-    if( texts.length === 0 ){
-
-      // If we ran out of text, use the callback to get started
-      // Also, remove the interval
-      // Also, return since we dont want this function to run anymore.
-      clearInterval( interval );
-      callback();
-      parent.style.left = '';
-      return;
-
-    }
-
-    // Get the first item of the array out of the array.
-    // Your array is now one item shorter.
-    var text = texts.shift();
-
-    // Create a paragraph to add to the DOM
-    // This new paragraph will trigger an animation
-    paragraph = document.createElement("p");
-    paragraph.textContent = text;
-    paragraph.className = text + " nums";
-
-    parent.appendChild( paragraph );
-
-    if (text == CUSTOM_TEXT) {
-      parent.style.left = 'calc(50% - 112px)';
-    }
-
-  }
-
-  // These are all the text we want to display
-  var texts = ['3', '2', '1', CUSTOM_TEXT];
-
-  // This will store the paragraph we are currently displaying
-  var paragraph = null;
-
-  // Initiate an interval, but store it in a variable so we can remove it later.
-  var interval = setInterval( count, 1000 );
-
 }

@@ -36,13 +36,13 @@ body {
   color: rgba(255,255,255,0.75);
 }
 
-#timer-overlay { 
-  position: absolute; 
+#timer-overlay {
+  position: absolute;
   z-index: 20;
-  top: var(--timer-overlay-top); 
+  top: var(--timer-overlay-top);
   left: calc(50% - 80px);
-  width: 150px; 
-  font-family: 'Roboto Mono', monospace; 
+  width: 150px;
+  font-family: 'Roboto Mono', monospace;
 }
 
 #canvas-wrap {
@@ -72,10 +72,10 @@ body {
 }
 
 #text-overlay {
-  position: absolute; 
+  position: absolute;
   z-index: 20;
-  top: calc(50% - 22px); 
-  left: calc(50% - 42px); 
+  top: calc(50% - 22px);
+  left: calc(50% - 42px);
 }
 
 #downcounter {
