@@ -1,4 +1,4 @@
-import { Camera } from './Camera.js';
+import * as camera from './Camera.js';
 import { Canvas } from './Canvas.js';
 import * as rec from './Recognition.js';
 import { startTimer, timerElement } from "./timerModule.js";
@@ -7,84 +7,34 @@ const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
 const HALPE_SIZE = 136; // Total number of keypoints from Halpe dataset
 
-const sleep = ms => new Promise(r => setTimeout(r, ms)); //Helper
-
-const camera = new Camera();
 const canvas = new Canvas();
 
 let rafId = null;
 let id = 0;
 let frames = [];
-let media_recorder = null;
-let blobs_recorded = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
 const textOverlayElement = document.getElementById('text-overlay');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
-const progressBarElement = document.getElementById('progressbar-models');
 const recordedVidElement = document.getElementById('recorded-video');
 const translationElement = document.getElementById('translation-result');
 
-const modalModelsLoad = new bootstrap.Modal(
-  document.getElementById('modal-models-load'), {keyboard: false});
-
-// Load networks at the start
-var detectorPoses, detectorHands, detectorFaces;
-await (async function() {
-modalModelsLoad.show();
-detectorPoses = await
-poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, {
-  runtime: 'mediapipe',
-  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose',
-                // or 'base/node_modules/@mediapipe/pose' in npm.
-  modelType: 'lite'
-});
-detectorHands = await
-handPoseDetection.createDetector(handPoseDetection.SupportedModels.MediaPipeHands, {
-  runtime: 'mediapipe',
-  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
-                // or 'base/node_modules/@mediapipe/hands' in npm.
-  modelType: 'lite'
-});
-detectorFaces = await
-faceLandmarksDetection.createDetector(faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
-  runtime: 'mediapipe',
-  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-                // or 'base/node_modules/@mediapipe/face_mesh' in npm.
-  refineLandmarks: false
-});
-})();
-
 // Create WebGL context at the start
 await (async function() {
-const image = new Image(1, 1);
-image.src = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
-await (rec.estimatePoses(detectorPoses, image, {}))
-.then(async () => {
-  progressBarElement.style.width = '50%';
-  progressBarElement.textContent = '50%';
-  await sleep(1000);
-});
-await (rec.estimateHands(detectorHands, image, {}))
-.then(async () => {
-  progressBarElement.style.width = '75%';
-  progressBarElement.textContent = '75%';
-  await sleep(1000);
-});
-await (rec.estimateFaces(detectorFaces, image, {}))
-.then(async () => {
-  progressBarElement.style.width = '100%';
-  progressBarElement.textContent = '100%';
-  await sleep(1000);
-});
-modalModelsLoad.hide();
-await sleep(500);
-startButtonElement.disabled = false;
+  // Load networks at the start
+  await rec.loadNets();
+
+  const image = new Image(1, 1);
+  image.src = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
+
+  rec.estimateAll(image, {});
+
+  startButtonElement.disabled = false;
 })();
 
 // Event listeners
-camera.getVideo().addEventListener('loadeddata', function() {
+camera.video.addEventListener('loadeddata', function() {
     captureFrames(5000);
 }, false);
 
@@ -107,7 +57,7 @@ startButtonElement.addEventListener('click', function() {
 
 // General purpose functions
 function captureFrames(milliseconds) {
-  camera.getVideo().hidden = false;
+  camera.video.hidden = false;
 
   timerElement.parentNode.classList.remove('d-none');
 
@@ -115,14 +65,14 @@ function captureFrames(milliseconds) {
 
   const clearAll = function() {
     window.cancelAnimationFrame(rafId);
-    media_recorder.stop();
-    blobs_recorded = []; //Clear Array
+    camera.media_recorder.stop();
+    camera.blobs_recorded = []; //Clear Array
     recordedVidElement.hidden = false;
     camera.stop();
     canvas.clear();
     id = 0;
     frames = []; //Clear Array
-    camera.getVideo().hidden = true;
+    camera.video.hidden = true;
     startButtonElement.disabled = false;
     textOverlayElement.classList.remove('d-none');
     timerElement.parentNode.classList.add('d-none');
@@ -130,23 +80,8 @@ function captureFrames(milliseconds) {
 
   let showRecording = true;
 
-  // set MIME type of recording as video/webm
-  media_recorder = new MediaRecorder(camera.webcamStream, { mimeType: 'video/webm' });
-
-  // event : new recorded video blob available
-  media_recorder.addEventListener('dataavailable', function(e) {
-    blobs_recorded.push(e.data);
-  });
-
-  // event : recording stopped & all blobs sent
-  media_recorder.addEventListener('stop', function() {
-    // create local object URL from the recorded video blobs
-    let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
-    recordedVidElement.src = showRecording ? video_local : "";
-  });
-
   // start recording with each recorded blob having 1 second video
-  media_recorder.start(milliseconds);
+  camera.media_recorder.start(milliseconds);
 
   runInference(canvas, camera);
 
@@ -235,15 +170,17 @@ function sendKeypointsToAPI() {
 }
 
 async function runInference(canvas, camera) {
-  const image = camera.getVideo();
+  const image = camera.video;
 
   canvas.clear();
 
-  const promisePoses = rec.estimatePoses(detectorPoses, image, {enableSmoothing: true, flipHorizontal: false});
-  const promiseHands = rec.estimateHands(detectorHands, image, {flipHorizontal: false});
-  const promiseFaces = rec.estimateFaces(detectorFaces, image, {flipHorizontal: false});
+  const arrPromises = rec.estimateAll(image, {
+    poses: {enableSmoothing: true, flipHorizontal: false},
+    hands: {flipHorizontal: false},
+    faces: {flipHorizontal: false},
+  });
 
-  Promise.all([promisePoses, promiseHands, promiseFaces])
+  Promise.all(arrPromises)
   .then((responses) => {
     const [poses, hands, faces] = responses;
 

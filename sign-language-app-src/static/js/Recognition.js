@@ -1,11 +1,38 @@
-export function estimatePoses(detectorPoses, image, estimationConfig) {
-  return detectorPoses.estimatePoses(image, estimationConfig);
+export var detectorPoses, detectorHands, detectorFaces;
+
+async function loadNets() {
+  detectorPoses = await poseDetection.createDetector(
+    poseDetection.SupportedModels.BlazePose, {
+      runtime: 'mediapipe',
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose',
+                    // or 'base/node_modules/@mediapipe/pose' in npm.
+      modelType: 'lite'
+    });
+
+  detectorHands = await handPoseDetection.createDetector(
+    handPoseDetection.SupportedModels.MediaPipeHands, {
+      runtime: 'mediapipe',
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
+                    // or 'base/node_modules/@mediapipe/hands' in npm.
+      modelType: 'lite'
+    });
+
+  detectorFaces = await 
+  faceLandmarksDetection.createDetector(
+    faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh, {
+      runtime: 'mediapipe',
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+                    // or 'base/node_modules/@mediapipe/face_mesh' in npm.
+      refineLandmarks: false
+    });
 }
 
-export function estimateHands(detectorHands, image, estimationConfig) {
-  return detectorHands.estimateHands(image, estimationConfig);
+function estimateAll(image, estimationConfigs) {
+  return [
+    detectorPoses.estimatePoses(image, estimationConfigs.poses),
+    detectorHands.estimateHands(image, estimationConfigs.hands),
+    detectorFaces.estimateFaces(image, estimationConfigs.faces)
+  ];
 }
 
-export function estimateFaces(detectorFaces, image, estimationConfig) {
-  return detectorFaces.estimateFaces(image, estimationConfig);
-}
+export { loadNets, estimateAll };
