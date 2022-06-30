@@ -24,9 +24,9 @@ const modalModelsLoad = new bootstrap.Modal(
 
 // Create WebGL context at the start
 await (async function() {
-  modalModelsLoad.show();
+  // modalModelsLoad.show();
 
-  await sleep(1000);
+  // await sleep(1000);
 
   // Load networks at the start
   await rec.loadNets();
@@ -36,9 +36,9 @@ await (async function() {
 
   rec.estimateAll(image, {});
 
-  await sleep(1000);
+  // await sleep(1000);
 
-  modalModelsLoad.hide();
+  // modalModelsLoad.hide();
 
   startButtonElement.disabled = false;
 })();
