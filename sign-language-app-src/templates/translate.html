@@ -22,6 +22,33 @@
 
   <div id="header"></div>
 
+  <!-- Push Notifications with Toasts -->
+  <div class="toast-container">
+    <div id="toast-frames" class="toast align-items-center text-white bg-warning border-0 m-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="h3 ms-3 align-self-center">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="toast-body">
+          Tu dispositivo no tiene la potencia de cómputo suficiente para realizar la traducción; recomendamos probar en una computadora.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+
+    <div id="toast-camera" class="toast align-items-center text-white bg-danger border-0 m-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="h3 ms-3 align-self-center">
+          <i class="bi bi-x-circle"></i>
+        </div>
+        <div class="toast-body">
+          No se encontró una cámara conectada a tu dispositivo.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
   <main>
   <div class="container text-center p-2">
     <h1>¡Traduce en Tiempo Real! (BETA)</h1>
@@ -52,7 +79,7 @@
               <button id="btn-start-webcam" type="button" class="btn btn-outline-success btn-lg m-1" disabled>Grabar</button>
             </div>
             <div id="timer-overlay" class="badge rounded-pill bg-danger d-none">
-              <h4 id="timer" style="position: relative; top: 2.5px;">0.00 seg</h4>
+              <h4 id="timer">0.00 seg</h4>
             </div>
           </div>
         </div>
@@ -71,31 +98,6 @@
     </p>
   </div>
   </main>
-
-  <!-- Push Notifications with Toasts -->
-  <div id="toast-frames" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 10px;">
-    <div class="d-flex">
-      <div class="h3 ms-3 align-self-center">
-        <i class="bi bi-exclamation-triangle"></i>
-      </div>
-      <div class="toast-body">
-        Tu dispositivo no tiene la potencia de cómputo suficiente para realizar la traducción; recomendamos probar en una computadora.
-      </div>
-      <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-
-  <div id="toast-camera" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 80px; left: 10px;">
-    <div class="d-flex">
-      <div class="h3 ms-3 align-self-center">
-        <i class="bi bi-x-circle"></i>
-      </div>
-      <div class="toast-body">
-        No se encontró una cámara conectada a tu dispositivo.
-      </div>
-      <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
 
   <!-- Modal -->
   <div class="modal fade" id="modal-models-load" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-models-load-label" aria-hidden="true">

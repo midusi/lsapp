@@ -45,12 +45,17 @@ body {
   font-family: 'Roboto Mono', monospace;
 }
 
+#timer {
+  position: relative;
+  top: 2.5px;
+}
+
 #canvas-wrap {
   position: relative; /* Make this a positioned parent */
 }
 
 .canvas, .video {
-  scroll-margin: 60px; /*Offset*/
+  scroll-margin: 20px; /*Offset*/
   /*Mirrored*/
   transform: scale(
     var(--canvas-scale-x), var(--canvas-scale-y));
@@ -100,6 +105,14 @@ body {
   margin: auto;
   text-align: center;
   animation: count 0.1s cubic-bezier(0.1,0.1,1,1) 1;
+}
+
+.toast-container {
+  position: sticky;
+  z-index: 20;
+  height: 0;
+  top: 5px;
+  left: 10px;
 }
 
 .modal-open {
