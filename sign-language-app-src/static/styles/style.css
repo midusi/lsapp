@@ -80,8 +80,16 @@ body {
   position: absolute;
   z-index: 20;
   top: calc(50% - 22px);
-  left: calc(50% - 42px);
+  left: calc(50% - 52px);
 }
+
+#spin-overlay {
+  position: absolute;
+  z-index: 20;
+  top: calc(50% - 10px);
+  left: calc(50% - 157px);
+}
+
 
 #downcounter {
   position: absolute;
@@ -113,8 +121,4 @@ body {
   height: 0;
   top: 5px;
   left: 10px;
-}
-
-.modal-open {
-  padding-right: 0 !important;
 }

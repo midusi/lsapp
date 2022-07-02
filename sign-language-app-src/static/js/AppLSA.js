@@ -15,18 +15,16 @@ let frames = [];
 
 const startButtonElement = document.getElementById('btn-start-webcam');
 const textOverlayElement = document.getElementById('text-overlay');
+const spinOverlayElement = document.getElementById('spin-overlay');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const translationElement = document.getElementById('translation-result');
 
-const modalModelsLoad = new bootstrap.Modal(
-  document.getElementById('modal-models-load'), {keyboard: false});
-
 // Create WebGL context at the start
 await (async function() {
-  // modalModelsLoad.show();
 
-  // await sleep(1000);
+  hideHTMLElement(textOverlayElement);
+  showHTMLElement(spinOverlayElement);
 
   // Load networks at the start
   await rec.loadNets();
@@ -36,9 +34,8 @@ await (async function() {
 
   rec.estimateAll(image, {});
 
-  // await sleep(1000);
-
-  // modalModelsLoad.hide();
+  hideHTMLElement(spinOverlayElement);
+  showHTMLElement(textOverlayElement);
 
   startButtonElement.disabled = false;
 })();
