@@ -4,6 +4,7 @@ import * as rec from './Recognition.js';
 import { hideHTMLElement, showHTMLElement, sleep } from './utilities.js';
 import { countdown } from "./countdownModule.js";
 import { startTimer, timerElement } from "./timerModule.js";
+import { updateFPS, fpsElement } from "./fpsModule.js";
 
 const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
@@ -19,6 +20,11 @@ const spinOverlayElement = document.getElementById('spin-overlay');
 const toastFramesElement = document.getElementById('toast-frames');
 const toastCameraElement = document.getElementById('toast-camera');
 const translationElement = document.getElementById('translation-result');
+
+const urlParams = new URLSearchParams(window.location.search);
+const debugFlag = urlParams.has('debug') ? urlParams.get('debug') : false;
+
+debugFlag && showHTMLElement(document.getElementById('fps-overlay'));
 
 // Create WebGL context at the start
 await (async function() {
@@ -78,6 +84,7 @@ function captureFrames(milliseconds) {
     canvas.clear();
     id = 0;
     frames = []; //Clear Array
+    fpsElement.innerText = '';
     showHTMLElement(textOverlayElement);
     hideHTMLElement(camera.getVideo());
     hideHTMLElement(timerElement.parentNode);
@@ -326,8 +333,10 @@ async function runInference(canvas, camera) {
     frames[frames.length-1]['delay']
       = (frames.length > 1) ? frames[frames.length-1]['timestamp'] - frames[frames.length-2]['timestamp'] : 0;
 
-    canvas.drawKeypoints(frames[frames.length-1].keypoints);
+    debugFlag && canvas.drawKeypoints(frames[frames.length-1].keypoints);
   });
+
+  debugFlag && updateFPS();
 
   rafId = window.requestAnimationFrame(() => runInference(canvas, camera));
 }

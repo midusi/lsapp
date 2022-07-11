@@ -50,6 +50,18 @@ body {
   top: 2.5px;
 }
 
+#fps-overlay {
+  position: absolute;
+  z-index: 20;
+  top: 2.5%;
+  left: calc(50% + -45px);
+  font-family: 'Roboto Mono', monospace;
+}
+
+#fps-overlay .badge {
+  border-radius: 0px;
+}
+
 #canvas-wrap {
   position: relative; /* Make this a positioned parent */
 }
@@ -89,7 +101,6 @@ body {
   top: calc(50% - 10px);
   left: calc(50% - 157px);
 }
-
 
 #downcounter {
   position: absolute;
