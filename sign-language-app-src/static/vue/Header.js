@@ -15,10 +15,7 @@ export default {
       <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a href="translate.html" class="nav-link active">Traduce (BETA)</a>
-          </li>
-          <li class="nav-item">
-            <a href="learn.html" class="nav-link">Aprende</a>
+            <a href="translate.html" class="nav-link">Traductor LSA</a>
           </li>
         </ul>
       </div>

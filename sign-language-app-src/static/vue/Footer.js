@@ -4,7 +4,7 @@ export default {
   },
   template: `
     <footer>
-    <div class="p-5 bg-dark text-white position-relative mt-auto">
+    <div class="p-4 bg-dark text-white position-relative mt-auto">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-md-9 text-center text-xl-start">

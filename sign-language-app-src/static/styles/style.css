@@ -24,7 +24,6 @@ html {
 
 body {
   overflow: overlay;
-  background-color: #f7fff6;
 }
 
 .footer-link {
@@ -132,4 +131,84 @@ body {
   height: 0;
   top: 5px;
   left: 10px;
+}
+
+.navbar-dark .navbar-toggler {
+  border-color: rgba(255,255,255,0);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0;
+}
+
+.toast-container {
+  z-index: 30;
+}
+
+.numbers {
+  font-family: 'Arial', sans-serif;
+  font-size: 10vh;
+  line-height: 1em;
+  text-align: center;
+  margin: 30px auto;
+  margin-bottom: 0px !important;
+  overflow: hidden;
+}
+.numbers__window {
+  display: inline-block;
+  overflow: hidden;
+  width: 0.5em;
+  height: 1em;
+}
+.numbers__window__digit {
+  font: inherit;
+  word-break: break-all;
+  display: block;
+  width: 0;
+  padding: 0 0.52em 0 0;
+  margin: 0 auto;
+  overflow: inherit;
+  animation: counting 0.4s steps(10) forwards infinite;
+}
+.numbers__window__digit::before {
+  content: attr(data-fake);
+  display: inline-block;
+  width: 100%;
+  height: auto;
+}
+.numbers__window__digit--1 {
+  animation-iteration-count: 3;
+}
+.numbers__window__digit--2 {
+  animation-iteration-count: 6;
+}
+.numbers__window__digit--3 {
+  animation-iteration-count: 9;
+}
+.numbers__window__digit--4 {
+  animation-iteration-count: 12;
+}
+.numbers__window__digit--5 {
+  animation-iteration-count: 15;
+}
+.numbers__window__digit--6 {
+  animation-iteration-count: 18;
+}
+.numbers__window__digit--7 {
+  animation-iteration-count: 21;
+}
+
+@keyframes counting {
+  100% {
+    transform: translate3d(0, -10em, 0);
+  }
+}
+
+.hr {
+  display: inline-block;
+}
+.hr:after {
+  content: '';
+  display: block;
+  border-top: 1px solid gray;
 }
