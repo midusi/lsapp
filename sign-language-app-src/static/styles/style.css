@@ -127,7 +127,7 @@ body {
 
 .toast-container {
   position: sticky;
-  z-index: 20;
+  z-index: 30;
   height: 0;
   top: 5px;
   left: 10px;
@@ -141,13 +141,9 @@ body {
   box-shadow: 0 0 0 0;
 }
 
-.toast-container {
-  z-index: 30;
-}
-
 .numbers {
   font-family: 'Arial', sans-serif;
-  font-size: 10vh;
+  font-size: clamp(2rem, 10vw, 4rem);
   line-height: 1em;
   text-align: center;
   margin: 30px auto;
@@ -177,25 +173,25 @@ body {
   height: auto;
 }
 .numbers__window__digit--1 {
-  animation-iteration-count: 3;
+  animation-iteration-count: 14;
 }
 .numbers__window__digit--2 {
-  animation-iteration-count: 6;
-}
-.numbers__window__digit--3 {
-  animation-iteration-count: 9;
-}
-.numbers__window__digit--4 {
   animation-iteration-count: 12;
 }
+.numbers__window__digit--3 {
+  animation-iteration-count: 10;
+}
+.numbers__window__digit--4 {
+  animation-iteration-count: 8;
+}
 .numbers__window__digit--5 {
-  animation-iteration-count: 15;
+  animation-iteration-count: 6;
 }
 .numbers__window__digit--6 {
-  animation-iteration-count: 18;
+  animation-iteration-count: 4;
 }
 .numbers__window__digit--7 {
-  animation-iteration-count: 21;
+  animation-iteration-count: 2;
 }
 
 @keyframes counting {

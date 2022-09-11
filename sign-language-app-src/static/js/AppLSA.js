@@ -1,7 +1,7 @@
 import * as camera from './Camera.js';
 import * as canvas from './Canvas.js';
 import * as rec from './Recognition.js';
-import { hideHTMLElement, showHTMLElement, sleep } from './utilities.js';
+import { hideHTMLElement, showHTMLElement } from './utilities.js';
 import { countdown } from "./countdownModule.js";
 import { startTimer, timerElement } from "./timerModule.js";
 import { updateFPS, fpsElement } from "./fpsModule.js";

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="../static/styles/style.css" />
   <title>LSApp👋</title>
 </head>
@@ -33,24 +33,24 @@
         <div class="accordion-item">
           <h2 class="accordion-header" id="flush-headingOne">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-              ¿Todos las LS son iguales?
+              ¿Cómo está entrenada la inteligencia artificial?
             </button>
           </h2>
           <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
-              No, una particularidad de la lengua de señas es que cada región a nivel mundial tiene su propio léxico y grupo de señas que lo representan.
+              Mediante la base de datos LSA-T, la primera en permitir la traducción de señas continuas en LSA. Contiene 14.880 sentencias a nivel de videos en LSA extraídos del canal de YouTube <a href="https://www.youtube.com/c/CNSORDOSARGENTINA">CN Sordos</a>, junto con las anotaciones para sus respectivas etiquetas y el agregado de la detección de keypoints para cada señante. Esto hace que el modelo de PyTorch esté entrenado directamente de datos generados por personas sordas. Más información en <a href="https://midusi.github.io/LSA-T/">LSA-T: The first continuous LSA dataset</a>.
             </div>
           </div>
         </div>
         <div class="accordion-item">
           <h2 class="accordion-header" id="flush-headingTwo">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-              ¿Quién puede acceder a los videos que subo a la aplicación?
+              ¿Puedo contribuir al proyecto?
             </button>
           </h2>
           <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
-              ¡Nadie! Ni siquiera nosotros, los videos al ser grabados se procesan en tu mismo navegador, sin siquiera la necesidad de que sean guardados temporalmente en un servidor externo.
+              ¡Sí! Es Open-Source y se encuentra alojado en GitHub en los repositorios: <a href="https://github.com/midusi/LSA-T">gh/midusi/lsa-t</a>, <a href="https://github.com/midusi/keypoint-models">gh/midusi/keypoint-models</a> y <a href="https://github.com/midusi/lsapp">gh/midusi/lsapp</a>.
             </div>
           </div>
         </div>
@@ -119,6 +119,30 @@
             </div>
           </div>
         </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="flush-headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+              ¿Todos las LS son iguales?
+            </button>
+          </h2>
+          <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              No, una particularidad de la lengua de señas es que cada región a nivel mundial tiene su propio léxico y grupo de señas que lo representan.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="flush-headingFive">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+              ¿Quién puede acceder a los videos que subo a la aplicación?
+            </button>
+          </h2>
+          <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              ¡Nadie! Ni siquiera nosotros, los videos al ser grabados se procesan en tu mismo navegador, sin siquiera la necesidad de que sean guardados temporalmente en un servidor externo. Al servidor solo se envían los <i>'keypoints'</i> para el procesamiento de la estimación de poses que realizó el señante.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -136,6 +160,6 @@
       }
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 </html>

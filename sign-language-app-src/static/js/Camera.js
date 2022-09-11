@@ -1,7 +1,10 @@
-navigator.getUserMedia =
-( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
+navigator.getUserMedia = ( 
+  navigator.getUserMedia || 
+  navigator.webkitGetUserMedia || 
+  navigator.mozGetUserMedia || 
+  navigator.msGetUserMedia );
 
-var webcamStream, media_recorder, blobs_recorded, video_local;
+var webcamStream, media_recorder, blobs_recorded;
 const video = document.querySelector('video');
 const recordedVideo = document.getElementById('recorded-video');
 
@@ -59,15 +62,6 @@ function stop() {
   webcamStream.getTracks().forEach(function(track) {
     track.stop();
   });
-  const checkFlag = () => {
-    if (video_local === undefined) {
-      window.setTimeout(checkFlag, 100);
-    } else {
-      recordedVideo.src = video_local;
-      video_local = undefined;
-    }
-  };
-  checkFlag();
 }
 
 function setupMediaRecorder() {
@@ -82,7 +76,7 @@ function setupMediaRecorder() {
   // event : recording stopped & all blobs sent
   media_recorder.addEventListener('stop', function() {
     // create local object URL from the recorded video blobs
-    video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+    recordedVideo.src = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
   });
 }
 
