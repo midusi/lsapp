@@ -5,7 +5,7 @@ navigator.getUserMedia = (
   navigator.msGetUserMedia );
 
 var webcamStream, media_recorder, blobs_recorded;
-const video = document.querySelector('video');
+const video = document.getElementById('camera-video');
 const recordedVideo = document.getElementById('recorded-video');
 
 function getVideo() {
