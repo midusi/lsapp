@@ -128,7 +128,6 @@ function captureFrames(milliseconds) {
     showRecording && camera.showRecordingElement(true);
     camera.stop();
     canvas.clear();
-    id = 0;
     frames = []; //Clear Array
     fpsElement.innerText = '';
     showHTMLElement(textOverlayElement);
