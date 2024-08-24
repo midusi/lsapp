@@ -8,8 +8,8 @@ export default {
       }
     },
     template: `
-    <video width="560" id="signVid" controls>
-        <source :src="('http://c1781468.ferozo.com/data/lsa64/') + ('00' + String(store.sign)).slice(-3) + '_' + (('00') + String(Math.floor(Math.random() * 10) + 1)).slice(-3) + ('_001.mp4')" type="video/mp4">
+    <video width="100%" id="signVid" controls>
+        <source :src="('https://indirivacua.github.io/lsa64_cut/') + ('00' + String(store.sign)).slice(-3) + '_' + (('00') + String(Math.floor(Math.random() * 10) + 1)).slice(-3) + ('_001.mp4')" type="video/mp4">
         Your browser does not support the video tag.
     </video>`
 }

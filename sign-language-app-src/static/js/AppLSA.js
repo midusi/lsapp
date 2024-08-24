@@ -9,6 +9,7 @@ import { updateFPS, fpsElement } from "./fpsModule.js";
 const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
 const HALPE_SIZE = 136; // Total number of keypoints from Halpe dataset
+const SL_API_URL = 'http://127.0.0.1:5000/model'
 
 let rafId = null;
 let id = 0;
@@ -161,7 +162,7 @@ function interpolateFrames() {
 
 function sendKeypointsToAPI() {
   translationElement.children[0].innerHTML = '<h4>Cargando...</h4>';
-  fetch('http://127.0.0.1:5000/model', {
+  fetch(SL_API_URL, {
     method: 'POST',
     headers: {
         'Content-type' : 'application/json'
