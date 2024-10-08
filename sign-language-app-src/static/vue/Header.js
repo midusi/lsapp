@@ -6,7 +6,7 @@ export default {
     <header>
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 sticky-top">
     <div class="container">
-      <a href="index.html" class="navbar-brand">LSApp👋</a>
+      <a href="index.html" class="navbar-brand">LSApp 👋</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
         <span class="navbar-toggler-icon"></span>

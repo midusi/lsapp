@@ -10,6 +10,7 @@ const MAX_FRAMES = 75; // Minimum length of video accepted by the model
 const MIN_FRAMES = Math.ceil(MAX_FRAMES * 0.5); // Threshold of frames
 const HALPE_SIZE = 136; // Total number of keypoints from Halpe dataset
 const SL_API_URL = 'http://127.0.0.1:5000/model'
+const MAX_LENGTH = 5000 // Maximum video capturing duration in milliseconds
 
 let rafId = null;
 let id = 0;
@@ -49,7 +50,7 @@ await (async function() {
 
 // Event listeners
 camera.getVideo().addEventListener('loadeddata', function() {
-    captureFrames(5000);
+    captureFrames(MAX_LENGTH);
 }, false);
 
 startButtonElement.addEventListener('click', function() {
