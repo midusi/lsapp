@@ -28,7 +28,7 @@ const debugFlag = urlParams.has('debug') ? urlParams.get('debug') : false;
 
 debugFlag && showHTMLElement(document.getElementById('fps-overlay'));
 
-// Create WebGL context at the start
+// Create WebGL context at the start (warming up the model)
 await (async function() {
 
   hideHTMLElement(textOverlayElement);

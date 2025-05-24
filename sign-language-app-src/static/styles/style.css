@@ -208,3 +208,10 @@ body {
   display: block;
   border-top: 1px solid gray;
 }
+
+#signVid {
+  transform: scale(-1,1);
+}
+#signVid::-webkit-media-controls-panel {
+ transform: scale(-1,1);
+}

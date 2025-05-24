@@ -1,6 +1,8 @@
 export default {
   data() {
-    return {}
+    return {
+      currentYear: new Date().getFullYear()
+    }
   },
   template: `
     <footer>
@@ -8,7 +10,7 @@ export default {
     <div class="container">
       <div class="row align-items-center">
         <div class="col-md-9 text-center text-xl-start">
-          <span class="lead">Copyright &copy; 2022 Instituto de Investigacion en Informática - LIDI</span>
+          <span class="lead">Copyright &copy; {{ currentYear }} Instituto de Investigacion en Informática - LIDI</span>
           <a href="https://weblidi.info.unlp.edu.ar/"><img class="img-fluid d-none d-xl-inline m-1" style="height: 50px" src="../static/images/iii-lidi-logo.png" alt=""></a>
           <a href="https://unlp.edu.ar/"><img class="img-fluid d-none d-xl-inline m-1" style="height: 50px" src="../static/images/unlp-logo.png" alt=""></a>
         </div>
